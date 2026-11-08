@@ -1,0 +1,101 @@
+bundle:
+  name: job-completion-triggers
+
+variables:
+  workspace_id:
+    description: Numeric id of your workspace (the number after ?o= in the URL)
+  catalog:
+    description: Unity Catalog catalog the tables go into
+    default: release_lab
+  schema:
+    description: Schema created for the tables
+    default: jct_demo
+  owner_group:
+    description: Workspace group that can manage the jobs
+    default: admins
+
+# Settings shared by the three jobs
+x-job-defaults: &job_defaults
+  max_concurrent_runs: 1
+  timeout_seconds: 3600
+  queue:
+    enabled: true
+  tags:
+    project: job-completion-triggers
+
+resources:
+  jobs:
+    ingest_orders:
+      <<: *job_defaults
+      name: ingest-orders
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+        - name: schema
+          default: ${var.schema}
+        - name: fail
+          default: "false"
+      tasks:
+        - task_key: ingest
+          notebook_task:
+            notebook_path: ./src/ingest_orders.py
+
+    ingest_customers:
+      <<: *job_defaults
+      name: ingest-customers
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+        - name: schema
+          default: ${var.schema}
+        - name: fail
+          default: "false"
+      tasks:
+        - task_key: ingest
+          notebook_task:
+            notebook_path: ./src/ingest_customers.py
+
+    build_gold:
+      <<: *job_defaults
+      name: build-gold
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+        - name: schema
+          default: ${var.schema}
+        - name: upstream_completions
+          default: "{{job.trigger.job_completion.completed_jobs}}"
+      trigger:
+        pause_status: UNPAUSED
+        job_completion:
+          # Upstream run result. This is the same setting as the "Upstream run
+          # result" dropdown in the UI, and one value applies to every job below.
+          #   SUCCESS  Succeeded (default), a run that passed
+          #   FAILED   Failed, a run that ended in any failure
+          #   DONE     Completed with any result
+          if_status: SUCCESS
+          jobs:
+            - workspace_id: ${var.workspace_id}
+              job_id: ${resources.jobs.ingest_orders.id}
+            - workspace_id: ${var.workspace_id}
+              job_id: ${resources.jobs.ingest_customers.id}
+      tasks:
+        - task_key: build
+          notebook_task:
+            notebook_path: ./src/build_gold.py
+
+targets:
+  # The only environment for now. It deploys outside any user folder in
+  # production mode. Create /Workspace/Deployments once as an admin and keep
+  # it restricted. To add dev or staging later, copy this block and change
+  # the name, mode and root_path.
+  prod:
+    default: true
+    mode: production
+    workspace:
+      root_path: /Workspace/Deployments/${bundle.name}/${bundle.target}
+    permissions:
+      - group_name: ${var.owner_group}
+        level: CAN_MANAGE
+      - group_name: users
+        level: CAN_VIEW

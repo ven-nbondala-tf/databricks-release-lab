@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+.databricks/
+.bundle/
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
+notes/
+.vscode/
