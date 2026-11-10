@@ -34,6 +34,14 @@ The workflow is in `.github/workflows/genie-code-instructions.yml` at the repo r
 - The docs say Genie Code generally prioritizes workspace instructions over user instructions. They do not say how workspace instructions rank against `AGENTS.md` and `CLAUDE.md`. Row 7 in `tests/test_prompts.md` checks that case.
 - The docs describe instructions as a way to guide responses, not as a way to enforce a policy. Use Unity Catalog permissions for enforcement.
 
+## Adapting the instructions
+
+- Each file starts with the environment and a core rule, then lists what Genie Code can do, what it must not do, how to answer, and worked examples. The examples show the tone and the shape of an answer. Replace the object names in them with names from your workspaces.
+- `dev.md` names the dev catalog `dev`. Change that to your own catalog name.
+- PROD and TEST write read-only SQL only, never Python, even when it only reads. This closes wrapper tricks, and it means a user who asks for a Python snippet gets the SQL equivalent. If your teams need read-only Python in PROD, change that rule on purpose.
+- The files are long on purpose. `prod.md` uses most of the 20,000 character limit, so run `scripts/check_length.py` after every edit.
+- Neither file replaces access control. Remove write grants from users in PROD if you want enforcement.
+
 ## Requirements
 
 - An access token for each workspace (DEV, TEST and PROD). The identity behind the token must be a workspace admin, because only admins can edit the instructions file. A token created for a service principal is better than a personal one, because it does not depend on one person's account. See the next section.
