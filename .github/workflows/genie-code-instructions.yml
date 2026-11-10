@@ -1,19 +1,23 @@
 name: genie-code-instructions
 
-# Checks the instruction files on every pull request, then deploys them
-# DEV -> TEST -> PROD after a merge to main. PROD waits for approval from the
-# required reviewers set on the "prod" GitHub environment.
+# Started by hand from the Actions tab (Run workflow). Pick the environment and
+# only that environment is deployed, using instructions/<environment>.md.
+# DEV and TEST can run from any branch, which is useful before a merge.
+# PROD can only run from main, and it waits for approval from the required
+# reviewers set on the "prod" GitHub environment.
 
 on:
-  pull_request:
-    paths:
-      - "databricks/genie-code-instructions/**"
-      - ".github/workflows/genie-code-instructions.yml"
-  push:
-    branches: [main]
-    paths:
-      - "databricks/genie-code-instructions/**"
-      - ".github/workflows/genie-code-instructions.yml"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy"
+        type: choice
+        required: true
+        default: dev
+        options:
+          - dev
+          - test
+          - prod
 
 permissions:
   contents: read
@@ -42,52 +46,23 @@ jobs:
       - name: Check instruction file length
         run: python "$FEATURE_DIR/scripts/check_length.py"
 
-  deploy-dev:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  deploy:
     needs: check
+    # PROD only deploys from main. DEV and TEST can run from any branch.
+    if: inputs.environment != 'prod' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    environment: dev
+    # The environment holds the secrets. Required reviewers on "prod" hold the
+    # job here until someone approves.
+    environment: ${{ inputs.environment }}
     steps:
       - uses: actions/checkout@v4
       - uses: databricks/setup-cli@483500c487a296b26b5875a07decbd6e7b1b58c5 # v1.24.0
         with:
           version: ${{ env.CLI_VERSION }}
-      - name: Deploy dev.md to DEV
+      - name: Deploy ${{ inputs.environment }}.md to ${{ inputs.environment }}
         env:
+          ENVIRONMENT: ${{ inputs.environment }}
           DATABRICKS_AUTH_TYPE: pat
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-        run: bash "$FEATURE_DIR/scripts/deploy.sh" "$FEATURE_DIR/instructions/dev.md"
-
-  deploy-test:
-    needs: deploy-dev
-    runs-on: ubuntu-latest
-    environment: test
-    steps:
-      - uses: actions/checkout@v4
-      - uses: databricks/setup-cli@483500c487a296b26b5875a07decbd6e7b1b58c5 # v1.24.0
-        with:
-          version: ${{ env.CLI_VERSION }}
-      - name: Deploy test.md to TEST
-        env:
-          DATABRICKS_AUTH_TYPE: pat
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-        run: bash "$FEATURE_DIR/scripts/deploy.sh" "$FEATURE_DIR/instructions/test.md"
-
-  deploy-prod:
-    needs: deploy-test
-    runs-on: ubuntu-latest
-    # Required reviewers on this environment hold the job until someone approves.
-    environment: prod
-    steps:
-      - uses: actions/checkout@v4
-      - uses: databricks/setup-cli@483500c487a296b26b5875a07decbd6e7b1b58c5 # v1.24.0
-        with:
-          version: ${{ env.CLI_VERSION }}
-      - name: Deploy prod.md to PROD
-        env:
-          DATABRICKS_AUTH_TYPE: pat
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-        run: bash "$FEATURE_DIR/scripts/deploy.sh" "$FEATURE_DIR/instructions/prod.md"
+        run: bash "$FEATURE_DIR/scripts/deploy.sh" "$FEATURE_DIR/instructions/${ENVIRONMENT}.md"

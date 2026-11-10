@@ -1,16 +1,14 @@
 # Genie Code instructions as code
 
-Genie Code reads workspace instructions from one file, and only workspace admins can edit it. This folder keeps a version of that file for each environment in git and deploys it with a pipeline: DEV, then TEST, then PROD after an approval. The PROD version makes Genie Code read-only, so a user with write permission still gets no write code and no execution from it. Changes to production go through the release process.
+Genie Code reads workspace instructions from one file, and only workspace admins can edit it. This folder keeps a version of that file for each environment in git and deploys it with a workflow you start by hand, one environment at a time: DEV, TEST or PROD, where PROD waits for an approval. The PROD version makes Genie Code read-only, so a user with write permission still gets no write code and no execution from it. Changes to production go through the release process.
 
 Instructions guide how Genie Code behaves. They do not replace Unity Catalog permissions, which still decide what any user or Genie Code can access.
 
 ```mermaid
 flowchart LR
-    PR[Pull request] --> L[Length check]
-    M[Merge to main] --> D[Deploy dev.md to DEV]
-    D --> T[Deploy test.md to TEST]
-    T --> A{Approval}
-    A --> P[Deploy prod.md to PROD]
+    R[Run workflow, pick an environment] --> L[Length check]
+    L --> A[Approval, prod only]
+    A --> D[Deploy that environment's file]
 ```
 
 ## What is in this folder
@@ -23,7 +21,7 @@ flowchart LR
 | `scripts/check_length.py` | Fails if an instruction file is over 20,000 characters and prints the size of each file. |
 | `scripts/deploy.sh` | Uploads one file to the workspace instructions path and checks that it landed as a file. |
 | `tests/test_prompts.md` | The prompts to run in PROD, with columns for the expected and the actual result. |
-| `.env.example` | Placeholders for workspace hosts and service principal client IDs. |
+| `.env.example` | Placeholders for the workspace hosts. |
 
 The workflow is in `.github/workflows/genie-code-instructions.yml` at the repo root, because GitHub only reads workflows from there.
 
@@ -60,20 +58,24 @@ Tokens expire. When one does, the deploy step fails with an authentication error
 
 ## Set it up
 
-1. In each workspace, create the access token (see Tokens below).
+1. In each workspace, create the access token (see Tokens above).
 2. In the GitHub repository, go to Settings, then Environments, and create `dev`, `test` and `prod`.
 3. On the `prod` environment, turn on Required reviewers and add the people who approve production changes.
 4. In each environment, add two secrets for that workspace: `DATABRICKS_HOST` and `DATABRICKS_TOKEN`.
-5. Optional but recommended: protect `main` so that pull requests need the length check to pass before they merge.
-6. Edit the three files in `instructions/` for your teams.
+5. Edit the three files in `instructions/` for your teams.
 
 ## Run it
 
-1. Change a file in `instructions/` on a branch and open a pull request. The length check runs on every pull request.
-2. Merge to `main`. The pipeline deploys `dev.md` to DEV and then `test.md` to TEST.
-3. The `prod` job waits for approval. A required reviewer approves it in the Actions run, and then `prod.md` is deployed to PROD.
-4. Check the result. In Genie Code settings, open Workspace instructions and use View file.
-5. Run the prompts in `tests/test_prompts.md` in PROD with a write-access account and fill in the last column.
+The workflow only runs when you start it. Nothing runs on a pull request or on a merge.
+
+1. In GitHub, open the Actions tab and choose the genie-code-instructions workflow.
+2. Click Run workflow, pick the branch, and pick the environment: `dev`, `test` or `prod`.
+3. The length check runs first. Then the selected environment is deployed, using the matching file from `instructions/`.
+4. For `prod`, the job waits for approval from the required reviewers before it deploys.
+5. Check the result. In Genie Code settings, open Workspace instructions and use View file.
+6. Run the prompts in `tests/test_prompts.md` in PROD with a write-access account and fill in the last column.
+
+DEV and TEST can run from any branch, so you can try a change before it is merged. PROD only runs from `main`. If you start a PROD run from another branch, the deploy job is skipped.
 
 To upload from your own machine, export the host and token for one workspace and run:
 
@@ -91,8 +93,8 @@ bash scripts/deploy.sh instructions/dev.md
 Redeploy the previous version from git history:
 
 1. Find the commit that changed the file with `git log -- instructions/prod.md`.
-2. Run `git revert <commit>` on a new branch and open a pull request.
-3. Merge it. The pipeline deploys the previous content to DEV and TEST, and PROD waits for approval again.
+2. Run `git revert <commit>` on a new branch and merge it to `main`.
+3. Run the workflow for each environment you need to roll back. For `prod`, it waits for approval again.
 
 ## Clean up
 
