@@ -21,6 +21,7 @@ flowchart LR
 | `scripts/check_length.py` | Fails if an instruction file is over 20,000 characters and prints the size of each file. |
 | `scripts/deploy.sh` | Uploads one file to the workspace instructions path and checks that it landed as a file. |
 | `tests/test_prompts.md` | The prompts to run in PROD, with columns for the expected and the actual result. |
+| `tests/screenshots/` | A screenshot of the Genie Code panel for each prompt that was run. |
 | `.env.example` | Placeholders for the workspace hosts. |
 
 The workflow is in `.github/workflows/genie-code-instructions.yml` at the repo root, because GitHub only reads workflows from there.
