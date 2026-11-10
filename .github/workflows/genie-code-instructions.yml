@@ -1,0 +1,93 @@
+name: genie-code-instructions
+
+# Checks the instruction files on every pull request, then deploys them
+# DEV -> TEST -> PROD after a merge to main. PROD waits for approval from the
+# required reviewers set on the "prod" GitHub environment.
+
+on:
+  pull_request:
+    paths:
+      - "databricks/genie-code-instructions/**"
+      - ".github/workflows/genie-code-instructions.yml"
+  push:
+    branches: [main]
+    paths:
+      - "databricks/genie-code-instructions/**"
+      - ".github/workflows/genie-code-instructions.yml"
+
+permissions:
+  contents: read
+
+# One deployment at a time, so an older run cannot overwrite a newer one.
+concurrency:
+  group: genie-code-instructions-deploy
+  cancel-in-progress: false
+
+env:
+  FEATURE_DIR: databricks/genie-code-instructions
+  CLI_VERSION: 1.24.0
+
+# The setup-cli action is pinned to the commit of its v1.24.0 tag, and the
+# access token is only passed to the deploy step, so the setup action never
+# sees it.
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check instruction file length
+        run: python "$FEATURE_DIR/scripts/check_length.py"
+
+  deploy-dev:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: check
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - uses: actions/checkout@v4
+      - uses: databricks/setup-cli@483500c487a296b26b5875a07decbd6e7b1b58c5 # v1.24.0
+        with:
+          version: ${{ env.CLI_VERSION }}
+      - name: Deploy dev.md to DEV
+        env:
+          DATABRICKS_AUTH_TYPE: pat
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: bash "$FEATURE_DIR/scripts/deploy.sh" "$FEATURE_DIR/instructions/dev.md"
+
+  deploy-test:
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+    environment: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: databricks/setup-cli@483500c487a296b26b5875a07decbd6e7b1b58c5 # v1.24.0
+        with:
+          version: ${{ env.CLI_VERSION }}
+      - name: Deploy test.md to TEST
+        env:
+          DATABRICKS_AUTH_TYPE: pat
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: bash "$FEATURE_DIR/scripts/deploy.sh" "$FEATURE_DIR/instructions/test.md"
+
+  deploy-prod:
+    needs: deploy-test
+    runs-on: ubuntu-latest
+    # Required reviewers on this environment hold the job until someone approves.
+    environment: prod
+    steps:
+      - uses: actions/checkout@v4
+      - uses: databricks/setup-cli@483500c487a296b26b5875a07decbd6e7b1b58c5 # v1.24.0
+        with:
+          version: ${{ env.CLI_VERSION }}
+      - name: Deploy prod.md to PROD
+        env:
+          DATABRICKS_AUTH_TYPE: pat
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: bash "$FEATURE_DIR/scripts/deploy.sh" "$FEATURE_DIR/instructions/prod.md"
