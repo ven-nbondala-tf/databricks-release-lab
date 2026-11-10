@@ -75,6 +75,16 @@ Tokens expire. When one does, the deploy step fails with an authentication error
 4. Check the result. In Genie Code settings, open Workspace instructions and use View file.
 5. Run the prompts in `tests/test_prompts.md` in PROD with a write-access account and fill in the last column.
 
+### Run it by hand
+
+You can also start the pipeline yourself, for one environment at a time:
+
+1. In GitHub, open the Actions tab and choose the genie-code-instructions workflow.
+2. Click Run workflow, pick the branch, and pick the environment: `dev`, `test` or `prod`.
+3. Only the selected environment is deployed, using the matching file from `instructions/`.
+
+DEV and TEST can run from any branch, so you can try a change before it is merged. PROD only runs from `main`. If you start a PROD run from another branch, only the length check runs. A PROD run still waits for approval from the required reviewers.
+
 To upload from your own machine, export the host and token for one workspace and run:
 
 ```bash

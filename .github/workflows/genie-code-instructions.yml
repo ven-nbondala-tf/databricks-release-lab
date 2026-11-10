@@ -1,8 +1,12 @@
 name: genie-code-instructions
 
-# Checks the instruction files on every pull request, then deploys them
-# DEV -> TEST -> PROD after a merge to main. PROD waits for approval from the
+# Checks the instruction files on every pull request. After a merge to main it
+# deploys them DEV -> TEST -> PROD, and PROD waits for approval from the
 # required reviewers set on the "prod" GitHub environment.
+#
+# It can also be started by hand from the Actions tab (Run workflow). Pick the
+# environment and only that environment is deployed. DEV and TEST can run from
+# any branch, which is useful before a merge. PROD can only run from main.
 
 on:
   pull_request:
@@ -14,6 +18,17 @@ on:
     paths:
       - "databricks/genie-code-instructions/**"
       - ".github/workflows/genie-code-instructions.yml"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy"
+        type: choice
+        required: true
+        default: dev
+        options:
+          - dev
+          - test
+          - prod
 
 permissions:
   contents: read
@@ -43,7 +58,9 @@ jobs:
         run: python "$FEATURE_DIR/scripts/check_length.py"
 
   deploy-dev:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: >-
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_dispatch' && inputs.environment == 'dev')
     needs: check
     runs-on: ubuntu-latest
     environment: dev
@@ -60,7 +77,13 @@ jobs:
         run: bash "$FEATURE_DIR/scripts/deploy.sh" "$FEATURE_DIR/instructions/dev.md"
 
   deploy-test:
-    needs: deploy-dev
+    # always() lets this job run when DEV was skipped on a manual run.
+    if: >-
+      always() && needs.check.result == 'success' && (
+        (github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.deploy-dev.result == 'success') ||
+        (github.event_name == 'workflow_dispatch' && inputs.environment == 'test')
+      )
+    needs: [check, deploy-dev]
     runs-on: ubuntu-latest
     environment: test
     steps:
@@ -76,7 +99,13 @@ jobs:
         run: bash "$FEATURE_DIR/scripts/deploy.sh" "$FEATURE_DIR/instructions/test.md"
 
   deploy-prod:
-    needs: deploy-test
+    # PROD only ever deploys from main, whether it runs after TEST or by hand.
+    if: >-
+      always() && needs.check.result == 'success' && github.ref == 'refs/heads/main' && (
+        (github.event_name == 'push' && needs.deploy-test.result == 'success') ||
+        (github.event_name == 'workflow_dispatch' && inputs.environment == 'prod')
+      )
+    needs: [check, deploy-test]
     runs-on: ubuntu-latest
     # Required reviewers on this environment hold the job until someone approves.
     environment: prod
