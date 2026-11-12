@@ -25,7 +25,7 @@ Genie Code tasks run with auto-approval on and the docs say it cannot be turned 
 
 ## What the bundle does not do
 
-The docs list Genie Code tasks as Jobs UI only. They cannot be defined in a bundle, the Jobs API or the SDKs. The alert task in this job depends on the Genie Code task, so a bundle could not own the job either. A job that a bundle owns is also reset to the bundle's definition on every deploy, which would remove a task added by hand.
+The docs list Genie Code tasks as Jobs UI only. They cannot be defined in a bundle, the Jobs API or the SDKs. The alert task in this job depends on the Genie Code task, so a bundle could not own the job either. A job that a bundle owns is reset to the bundle's definition on every deploy, which I expect would remove a task added by hand. That was not tested here.
 
 So the bundle covers everything around the job, and you create the job itself in the UI. It has three tasks and takes a few minutes.
 
@@ -67,6 +67,51 @@ The deploy creates the `setup-failure-demo` job and the `pipeline-failure-invest
 5. Add a SQL alert task named `email_report`. Make it depend on `investigate_failure`, set Run if to **All succeeded**, pick the `pipeline-failure-investigated` alert and a warehouse, and add yourself as a subscriber.
 
 The prompt uses `{{job.id}}` and `{{job.run_id}}` directly, so the job needs no parameters for them. If either reference does not resolve in your workspace, the task fails before it starts and the UI lists the reference as unusable under the prompt.
+
+## Create the job through the API with one manual step
+
+Only the investigator task has to be made in the UI. The rest of the job can be created from the API, with a placeholder notebook task where the investigator goes. Save this as `job.json`, replacing the values in angle brackets:
+
+```json
+{
+  "name": "nightly-orders-load",
+  "max_concurrent_runs": 1,
+  "parameters": [{"name": "scenario", "default": "ok"}],
+  "tasks": [
+    {
+      "task_key": "load_orders",
+      "notebook_task": {"notebook_path": "<path to the deployed load_orders notebook>"},
+      "timeout_seconds": 900
+    },
+    {
+      "task_key": "investigate_failure",
+      "depends_on": [{"task_key": "load_orders"}],
+      "run_if": "AT_LEAST_ONE_FAILED",
+      "notebook_task": {"notebook_path": "<path to the deployed load_orders notebook>"},
+      "max_retries": 0,
+      "timeout_seconds": 900
+    },
+    {
+      "task_key": "email_report",
+      "depends_on": [{"task_key": "investigate_failure"}],
+      "run_if": "ALL_SUCCESS",
+      "alert_task": {
+        "alert_id": "<id of the pipeline-failure-investigated alert>",
+        "warehouse_id": "<warehouse id>",
+        "subscribers": [{"user_name": "<your email>"}]
+      }
+    }
+  ]
+}
+```
+
+```bash
+databricks jobs create --json @job.json
+```
+
+Then open the job in the UI, select `investigate_failure`, change its Type from Notebook to Genie Code, paste the contents of `prompt/investigator.md` as the prompt, and save. The dependency on `load_orders` and the Run if setting stay as they were. The alert id comes from `databricks alerts-v2 list-alerts`.
+
+After that switch, change the job's tasks only in the UI. The Jobs API does not show the Genie Code task, so a task list sent back through the API would not contain it, and what that does was not tested.
 
 ## The scenarios
 
