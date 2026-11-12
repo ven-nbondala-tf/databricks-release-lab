@@ -27,7 +27,7 @@ Genie Code tasks run with auto-approval on and the docs say it cannot be turned 
 
 The docs list Genie Code tasks as Jobs UI only. They cannot be defined in a bundle, the Jobs API or the SDKs. The alert task in this job depends on the Genie Code task, so a bundle could not own the job either. A job that a bundle owns is reset to the bundle's definition on every deploy, which I expect would remove a task added by hand. That was not tested here.
 
-So the bundle covers everything around the job, and you create the job itself in the UI. It has three tasks and takes a few minutes.
+So the bundle covers everything around the job, and you create the job itself separately. You can build all three tasks in the UI, or create the job from the API and switch only the Genie Code task by hand in the UI. Both ways are described below.
 
 ## Requirements
 
