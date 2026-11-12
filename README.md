@@ -7,6 +7,8 @@ Small, runnable examples for new Databricks features. Each folder is one feature
 | Folder | What it shows |
 | --- | --- |
 | [databricks/job-completion-triggers](databricks/job-completion-triggers) | Start a job when other jobs finish |
+| [databricks/genie-code-instructions](databricks/genie-code-instructions) | Keep Genie Code read-only in production with workspace instructions deployed from git |
+| [databricks/genie-code-failure-investigator](databricks/genie-code-failure-investigator) | A Genie Code task that investigates a failed job and emails an incident report |
 
 ## Setup
 
