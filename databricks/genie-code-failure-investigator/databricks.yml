@@ -1,0 +1,77 @@
+bundle:
+  name: genie-code-failure-investigator
+
+variables:
+  warehouse_id:
+    description: Serverless or pro SQL warehouse that runs the setup SQL and the alert query
+  alert_email:
+    description: Email address that receives the incident report
+  owner_group:
+    description: Workspace group that can manage the resources
+    default: admins
+
+resources:
+  jobs:
+    # Run once with: databricks bundle run setup_demo
+    setup_demo:
+      name: setup-failure-demo
+      max_concurrent_runs: 1
+      tasks:
+        - task_key: create_tables
+          sql_task:
+            warehouse_id: ${var.warehouse_id}
+            file:
+              path: ./sql/setup.sql
+
+  alerts:
+    pipeline_failure_investigated:
+      display_name: pipeline-failure-investigated
+      warehouse_id: ${var.warehouse_id}
+      query_text: |
+        SELECT
+          failed_task,
+          confidence,
+          root_cause,
+          suggested_fix,
+          1 AS incident_count
+        FROM release_lab.ops.incident_reports
+        WHERE created_at >= current_timestamp() - INTERVAL 15 MINUTES
+        ORDER BY created_at DESC
+        LIMIT 1
+      evaluation:
+        source:
+          name: incident_count
+          display: incident_count
+        comparison_operator: GREATER_THAN
+        threshold:
+          value:
+            double_value: 0
+        empty_result_state: OK
+        notification:
+          notify_on_ok: false
+          # 1 means notify on every evaluation that triggers. The default of 0 emails only the first failure.
+          retrigger_seconds: 1
+          subscriptions:
+            - user_email: ${var.alert_email}
+      # The alert only runs when the job's alert task calls it, so the schedule stays paused
+      schedule:
+        quartz_cron_schedule: "0 0 0 1 1 ? 2099"
+        timezone_id: UTC
+        pause_status: PAUSED
+      custom_template_format: HTML
+      custom_summary: "Pipeline failure investigated: {{ALERT_NAME}}"
+      custom_description: |
+        <h2>A pipeline run failed</h2>
+        <p>Genie Code investigated the failure. Review the suggested fix before applying it.</p>
+        {{QUERY_RESULT_TABLE}}
+        <p><a href="{{ALERT_URL}}">Open the alert</a></p>
+
+targets:
+  prod:
+    default: true
+    mode: production
+    workspace:
+      root_path: /Workspace/Deployments/${bundle.name}/${bundle.target}
+    permissions:
+      - group_name: ${var.owner_group}
+        level: CAN_MANAGE
