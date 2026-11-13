@@ -14,7 +14,8 @@ spark.sql(f"""
     CREATE OR REPLACE MATERIALIZED VIEW {catalog}.{schema}.daily_revenue_sql AS
     SELECT CAST(order_ts AS DATE) AS order_date,
            SUM(amount) AS revenue,
-           COUNT(*) AS orders
+           COUNT(*) AS orders,
+           MAX(amount) AS largest_order
     FROM {source}
     GROUP BY CAST(order_ts AS DATE)
 """)
