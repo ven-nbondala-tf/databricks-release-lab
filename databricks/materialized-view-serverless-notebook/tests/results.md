@@ -85,3 +85,21 @@ Screenshots in `screenshots/`: `workflow-run.png` (run 3), `job-run-graph.png` (
 - **Compute type.** `DESCRIBE TABLE EXTENDED ... AS JSON` has no field for it. Catalog Explorer shows it on the Details tab as "Creation compute type: Serverless Generic Compute".
 - **Created by, not owner, on the Details tab.** The Details tab shows "Created by". The owner column is on the schema page, and `DESCRIBE` has an `owner` field. All three showed the same identity.
 - **The no-change rerun is cheap.** Running the notebooks again did not recreate anything, and the Python view stayed a no-operation even when the SQL view changed.
+
+## Part C: environment version 5 check (2026-11-13)
+
+Question: does `create_mv_python` work on serverless environment version 5, the documented minimum?
+
+I submitted a one-time run with the same three tasks, the same notebooks from the deployed bundle and the same parameters, with the environment set to version 5 instead of 6. It was a one-time run, not a workflow run, and the saved job in the bundle was not changed, so there was nothing to restore. It still pins version 6.
+
+| Task | Result | Time |
+| --- | --- | --- |
+| `create_mv_sql` | Succeeded | 53.2 s |
+| `create_mv_python` | Succeeded | 53.2 s |
+| `verify_mv` | Succeeded | 9.6 s |
+
+The whole run took 63.5 s. Both views kept their ids and were refreshed as a no-operation, and the SQL view kept its `largest_order` column. So version 5 works for the view as defined here. The earlier failure on version 5 in the first round was the Auto Loader read in a streaming table, which this notebook no longer has.
+
+## Part D: expectations in the docs (2026-11-13)
+
+The "Use Python with standalone pipelines" page, dated 2026-11-11 and updated on 2026-11-12, lists expectations as unsupported for tables defined with the decorators. Under Unsupported APIs: "Expectations, such as `@dp.expect` and `@dp.expect_or_fail`". Under Limitations: "Expectations, additional flows, change data capture (CDC) flows, sinks, and temporary views are not supported." The page says nothing about expectations for the `spark.sql()` path. The November 2026 release notes page has the entry "Standalone pipelines on serverless general compute are now generally available" dated November 11, 2026, and I did not find the line "Standalone pipeline materialized views support expectations" on it.

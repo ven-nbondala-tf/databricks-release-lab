@@ -37,8 +37,8 @@ The workflow is `.github/workflows/materialized-view.yml` at the root of the rep
 ## Requirements
 
 - A workspace with Unity Catalog and serverless compute enabled. The tests ran on Databricks Free Edition.
-- Databricks Runtime 18.1 or above for `spark.sql()` to create the view. Serverless notebooks meet this.
-- For the Python version, a serverless environment version that can import `pyspark.pipelines`. The job pins version 6, which worked in the tests.
+- Databricks Runtime 18.1 or above for `spark.sql()` to create the view. Interactive notebooks meet this automatically, but a job pinned to an older version does not.
+- For the Python version, a serverless environment version that can import `pyspark.pipelines`. The job pins version 6, which all the tests ran on. Version 5, the documented minimum, also worked in a one-time test.
 - The `CREATE MATERIALIZED VIEW` privilege on the target schema, and `USE CATALOG` and `USE SCHEMA` on it.
 - `SELECT` on the source table `release_lab.jct_demo.bronze_orders`.
 - A serverless or pro SQL warehouse, used only to run `sql/setup.sql` by hand.
@@ -93,6 +93,7 @@ PROD only runs from `main`. DEV and TEST can run from any branch. A concurrency 
 - Only the owner can refresh the views.
 - A view can only be refreshed with the compute type it was created with. Views created on serverless general compute cannot be created or refreshed from a SQL warehouse, including a SQL task in a job.
 - There is no asynchronous refresh for these views.
+- With the Python decorator, expectations, additional flows, CDC flows and sinks are not supported, and a `REFRESH` statement does not work on the view.
 - Cost attribution is not available for this compute.
 - `DESCRIBE TABLE EXTENDED ... AS JSON` shows the owner, the pipeline id and the refresh status, but it has no field for the compute type. Catalog Explorer shows it on the Details tab as Creation compute type.
 
@@ -113,6 +114,7 @@ Then delete the GitHub environments and their secrets, and revoke the token if y
 
 ## Reference
 
+- [November 2026 release notes](https://learn.microsoft.com/en-us/azure/databricks/release-notes/product/2026/november), Databricks documentation
 - [Requirements for standalone pipelines](https://learn.microsoft.com/en-us/azure/databricks/ldp/dbsql/compute), Microsoft Learn
 - [Use Python with standalone pipelines](https://learn.microsoft.com/en-us/azure/databricks/sql/mv-st/using-python), Microsoft Learn
 - [Use standalone materialized views](https://learn.microsoft.com/en-us/azure/databricks/sql/mv-st/materialized), Microsoft Learn
