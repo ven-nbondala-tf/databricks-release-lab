@@ -1,0 +1,11 @@
+---
+config:
+  look: handDrawn
+  theme: neutral
+---
+flowchart LR
+    G["Generator job<br/>writes order files"] --> V[("Landing volume<br/>JSON files")]
+    V --> S["Streaming table<br/>reads new files only"]
+    S --> M["Materialized view<br/>daily revenue by region"]
+    J["Refresh job<br/>notebook task on serverless"] -.->|"CREATE OR REFRESH / decorators"| S
+    J -.->|"CREATE OR REPLACE / decorators"| M

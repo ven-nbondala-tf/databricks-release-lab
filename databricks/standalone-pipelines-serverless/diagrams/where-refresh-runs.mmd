@@ -1,0 +1,10 @@
+---
+config:
+  look: handDrawn
+  theme: neutral
+---
+flowchart LR
+    C["Object created in a<br/>serverless notebook"] --> N["Refresh from a notebook task<br/>works"]
+    C --> W["Refresh from a SQL task<br/>on a warehouse"]
+    W --> E["INVALID_PARAMETER_VALUE<br/>created in serverless generic compute"]
+    C --> D["Drop from a warehouse<br/>works"]
