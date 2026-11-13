@@ -94,7 +94,7 @@ PROD only runs from `main`. DEV and TEST can run from any branch. A concurrency 
 - A view can only be refreshed with the compute type it was created with. Views created on serverless general compute cannot be created or refreshed from a SQL warehouse, including a SQL task in a job.
 - There is no asynchronous refresh for these views.
 - Cost attribution is not available for this compute.
-- `DESCRIBE TABLE EXTENDED ... AS JSON` shows the owner, the pipeline id and the refresh status, but it has no field for the compute type.
+- `DESCRIBE TABLE EXTENDED ... AS JSON` shows the owner, the pipeline id and the refresh status, but it has no field for the compute type. Catalog Explorer shows it on the Details tab as Creation compute type.
 
 ## Cleanup
 
