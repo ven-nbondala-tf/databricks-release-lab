@@ -1,0 +1,94 @@
+bundle:
+  name: mv-refresh-deep-dive
+
+variables:
+  warehouse_id:
+    description: SQL warehouse used by the job that refreshes from a SQL task
+  owner_group:
+    description: Workspace group that can manage the jobs
+    default: admins
+
+resources:
+  jobs:
+    # Writes one batch of order files into the landing volume
+    generate_batch:
+      name: mvst-generate-batch
+      max_concurrent_runs: 1
+      parameters:
+        - name: batch
+          default: "1"
+        - name: rows
+          default: "200"
+      tasks:
+        - task_key: generate
+          notebook_task:
+            notebook_path: ./src/generate_orders.py
+
+    # Version A: SQL. Running this job creates the objects and refreshes them.
+    refresh_sql:
+      name: mvst-refresh-sql
+      max_concurrent_runs: 1
+      tasks:
+        - task_key: refresh
+          notebook_task:
+            notebook_path: ./src/version_a_sql.py
+
+    # Version A: refresh with REFRESH statements
+    refresh_sql_statements:
+      name: mvst-refresh-sql-statements
+      max_concurrent_runs: 1
+      tasks:
+        - task_key: refresh
+          notebook_task:
+            notebook_path: ./src/refresh_sql.py
+
+    # Version B: Python decorators
+    refresh_python:
+      name: mvst-refresh-python
+      max_concurrent_runs: 1
+      tasks:
+        - task_key: refresh
+          notebook_task:
+            notebook_path: ./src/version_b_python.py
+
+    # Row counts and refresh history for one version
+    measure:
+      name: mvst-measure
+      max_concurrent_runs: 1
+      parameters:
+        - name: version
+          default: sql
+      tasks:
+        - task_key: measure
+          notebook_task:
+            notebook_path: ./src/measure.py
+
+    # Refreshes the SQL version from a SQL task on a warehouse
+    refresh_from_warehouse:
+      name: mvst-refresh-from-warehouse
+      max_concurrent_runs: 1
+      tasks:
+        - task_key: refresh
+          sql_task:
+            warehouse_id: ${var.warehouse_id}
+            file:
+              path: ./sql/refresh_mv_sql.sql
+
+    # Reports the runtime and whether the Python decorators can be imported
+    check_environment:
+      name: mvst-check-environment
+      max_concurrent_runs: 1
+      tasks:
+        - task_key: check
+          notebook_task:
+            notebook_path: ./src/check_environment.py
+
+targets:
+  prod:
+    default: true
+    mode: production
+    workspace:
+      root_path: /Workspace/Deployments/${bundle.name}/${bundle.target}
+    permissions:
+      - group_name: ${var.owner_group}
+        level: CAN_MANAGE

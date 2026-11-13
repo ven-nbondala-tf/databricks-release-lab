@@ -1,0 +1,67 @@
+name: materialized-view
+
+# Creates the materialized views from serverless notebook tasks.
+# Started by hand from the Actions tab (pick the environment), or by a push to
+# main that changes the feature folder, which deploys to prod.
+# PROD can only run from main. DEV and TEST can run from any branch.
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy"
+        type: choice
+        required: true
+        default: dev
+        options:
+          - dev
+          - test
+          - prod
+  push:
+    branches:
+      - main
+    paths:
+      - "databricks/materialized-view-serverless-notebook/**"
+      - ".github/workflows/materialized-view.yml"
+
+permissions:
+  contents: read
+
+# One deployment at a time, so an older run cannot overwrite a newer one.
+concurrency:
+  group: materialized-view-deploy
+  cancel-in-progress: false
+
+env:
+  FEATURE_DIR: databricks/materialized-view-serverless-notebook
+  CLI_VERSION: 1.24.0
+  # A push has no input, so it deploys to prod.
+  TARGET: ${{ inputs.environment || 'prod' }}
+
+jobs:
+  deploy:
+    # PROD only deploys from main. DEV and TEST can run from any branch.
+    if: (inputs.environment || 'prod') != 'prod' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    # The environment holds the host and token secrets.
+    environment: ${{ inputs.environment || 'prod' }}
+    defaults:
+      run:
+        working-directory: databricks/materialized-view-serverless-notebook
+    env:
+      DATABRICKS_AUTH_TYPE: pat
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      DATABRICKS_BUNDLE_ENGINE: direct
+    steps:
+      - uses: actions/checkout@v4
+      - uses: databricks/setup-cli@483500c487a296b26b5875a07decbd6e7b1b58c5 # v1.24.0
+        with:
+          version: ${{ env.CLI_VERSION }}
+      - name: Validate the bundle
+        run: databricks bundle validate -t "$TARGET"
+      - name: Deploy the bundle
+        run: databricks bundle deploy -t "$TARGET"
+      # bundle run waits for the job and exits with an error if any task fails.
+      - name: Run create_materialized_views
+        run: databricks bundle run create_materialized_views -t "$TARGET"

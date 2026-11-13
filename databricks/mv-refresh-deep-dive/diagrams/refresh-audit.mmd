@@ -1,0 +1,15 @@
+---
+config:
+  look: handDrawn
+  theme: neutral
+---
+flowchart LR
+    R["A refresh finished"] --> D["DESCRIBE TABLE EXTENDED ... AS JSON<br/>refresh_information.last_refresh_type"]
+    R --> E["event_log(TABLE(name))<br/>planning_information event"]
+    R --> P["Pipeline page<br/>Incrementalization column"]
+    D --> V{"Which refresh ran?"}
+    E --> V
+    P --> V
+    V --> I["INCREMENTAL"]
+    V --> N["NO OPERATION"]
+    V --> C["RECOMPUTED"]

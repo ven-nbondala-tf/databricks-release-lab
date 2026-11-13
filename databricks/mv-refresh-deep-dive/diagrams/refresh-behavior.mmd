@@ -1,0 +1,13 @@
+---
+config:
+  look: handDrawn
+  theme: neutral
+---
+flowchart TD
+    R["Refresh the materialized view"] --> Q{"What changed?"}
+    Q -->|"First run, or the definition changed"| F["COMPLETE_RECOMPUTE<br/>last_refresh_type RECOMPUTED"]
+    Q -->|"New rows in the streaming table"| I["GROUP_AGGREGATE<br/>last_refresh_type INCREMENTAL"]
+    Q -->|"Nothing changed"| N["NO_OP<br/>last_refresh_type NO OPERATION"]
+    F --> O["Same object id after a definition change<br/>6 to 8 seconds"]
+    I --> O2["Reads only the changed rows<br/>11 to 20 seconds"]
+    N --> O3["4 to 6 seconds"]

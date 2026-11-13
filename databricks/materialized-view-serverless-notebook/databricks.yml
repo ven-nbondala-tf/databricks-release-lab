@@ -1,0 +1,80 @@
+bundle:
+  name: materialized-view-serverless-notebook
+
+variables:
+  catalog:
+    description: Unity Catalog catalog the views go into
+    default: release_lab
+  schema:
+    description: Schema the views are created in
+    default: mvst_demo
+  source_table:
+    description: Table the views read from
+    default: release_lab.jct_demo.bronze_orders
+  owner_group:
+    description: Workspace group that can manage the job
+    default: admins
+
+resources:
+  jobs:
+    # Creates both views from serverless notebook tasks. There is no SQL warehouse
+    # task here on purpose: views created on serverless general compute cannot be
+    # created or refreshed from a warehouse.
+    create_materialized_views:
+      name: create_materialized_views
+      max_concurrent_runs: 1
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+        - name: schema
+          default: ${var.schema}
+        - name: source_table
+          default: ${var.source_table}
+      # Pinned because a one-time run defaults to an older environment that
+      # cannot import pyspark.pipelines.
+      environments:
+        - environment_key: serverless_v6
+          spec:
+            environment_version: "6"
+      tasks:
+        - task_key: create_mv_sql
+          environment_key: serverless_v6
+          notebook_task:
+            notebook_path: ./notebooks/create_mv_sql.py
+        - task_key: create_mv_python
+          environment_key: serverless_v6
+          notebook_task:
+            notebook_path: ./notebooks/create_mv_python.py
+        - task_key: verify_mv
+          environment_key: serverless_v6
+          depends_on:
+            - task_key: create_mv_sql
+            - task_key: create_mv_python
+          notebook_task:
+            notebook_path: ./notebooks/verify_mv.py
+
+# Each target is a workspace. Put the host of that workspace in the matching
+# GitHub environment secret. The views are owned by the identity that deploys and runs.
+targets:
+  dev:
+    mode: production
+    workspace:
+      root_path: /Workspace/Deployments/${bundle.name}/${bundle.target}
+    permissions:
+      - group_name: ${var.owner_group}
+        level: CAN_MANAGE
+  test:
+    mode: production
+    workspace:
+      root_path: /Workspace/Deployments/${bundle.name}/${bundle.target}
+    permissions:
+      - group_name: ${var.owner_group}
+        level: CAN_MANAGE
+  prod:
+    default: true
+    mode: production
+    workspace:
+      root_path: /Workspace/Deployments/${bundle.name}/${bundle.target}
+    permissions:
+      - group_name: ${var.owner_group}
+        level: CAN_MANAGE
