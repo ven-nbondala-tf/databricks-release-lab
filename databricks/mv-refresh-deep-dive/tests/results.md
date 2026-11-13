@@ -1,3 +1,5 @@
+Moved here from the first version of this work. The results about creating the materialized view are repeated in `../../materialized-view-serverless-notebook/tests/results.md`.
+
 # Test results
 
 Run on 2026-11-13 in a Databricks Free Edition workspace with serverless compute only. Databricks CLI 1.24.0, bundle deployed with the direct engine. Version A defines the objects with SQL through `spark.sql()`. Version B defines the same two objects with the Python pipelines decorators. Both read JSON order files from the same landing volume, 200 orders per batch, and both build a streaming table and a materialized view with daily revenue by region.

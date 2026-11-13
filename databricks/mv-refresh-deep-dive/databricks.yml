@@ -1,5 +1,5 @@
 bundle:
-  name: standalone-pipelines-serverless
+  name: mv-refresh-deep-dive
 
 variables:
   warehouse_id:
