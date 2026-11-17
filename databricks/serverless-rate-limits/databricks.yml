@@ -1,0 +1,42 @@
+bundle:
+  name: serverless-rate-limits
+
+variables:
+  compute_id:
+    description: Id of the automated serverless compute object that carries the rate limit. In the UI, open the object, use the kebab menu and choose Copy compute ID.
+  owner_group:
+    description: Workspace group that can manage the resources
+    default: admins
+
+resources:
+  jobs:
+    rate_limit_workload:
+      name: rate_limit_workload
+      max_concurrent_runs: 1
+      parameters:
+        - name: rows
+          default: "300000000"
+        - name: partitions
+          default: "1200"
+      job_clusters:
+        - job_cluster_key: rate_limited
+          serverless_compute:
+            policy_id: ${var.compute_id}
+      tasks:
+        - task_key: workload
+          job_cluster_key: rate_limited
+          notebook_task:
+            notebook_path: ./src/workload.py
+            base_parameters:
+              rows: "{{job.parameters.rows}}"
+              partitions: "{{job.parameters.partitions}}"
+
+targets:
+  prod:
+    default: true
+    mode: production
+    workspace:
+      root_path: /Workspace/Deployments/${bundle.name}/${bundle.target}
+    permissions:
+      - group_name: ${var.owner_group}
+        level: CAN_MANAGE
