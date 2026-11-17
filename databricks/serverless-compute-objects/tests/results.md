@@ -1,54 +1,44 @@
 # Test results
 
-Everything ran on a Databricks Free Edition workspace on November 17, 2026, with Databricks CLI 1.24.0 and the direct deployment engine. The job is `serverless_objects_demo` from this folder. Before every run the job's `serverless_compute.policy_id` was read back from the Jobs API and compared with the object being tested.
+Run on November 17, 2026 with Databricks CLI 1.24.0 and the direct deployment engine. The job is `serverless_objects_demo` from this folder. Before every run the job's `serverless_compute.policy_id` was read back from the Jobs API and compared with the object being tested.
 
-## Objects created
+## Objects
 
-| Name | Size | How |
+| Name | Size | ID |
 | --- | --- | --- |
-| `serverless_small` | Small | Create serverless compute in the UI |
-| `serverless_2xlarge` | 2X-Large | Create serverless compute in the UI |
-
-`serverless_small` was first created under another name and renamed from its Edit page. The ID did not change.
+| Default Automated Compute | Default | `66c36de7-c991-3857-8248-d289a92730c1` |
+| `serverless_small` | Small | `b58b3a27-6146-4c62-b122-1802a6ff78fa` |
+| `serverless_medium` | Medium | `975bd5be-4a4f-4e56-ab51-5a682a90d1be` |
+| `serverless_large` | Large | `66b9608c-043f-4740-b8a3-a29d904d5041` |
+| `serverless_xlarge` | X-Large | `bcfbcc3c-fb8b-48ef-8f4d-9fac5f1561b1` |
+| `serverless_2xlarge` | 2X-Large | `70e7ee45-df34-40f9-85ce-1afe5e4f8a46` |
 
 ## Run times
 
-| Workload | Compute | Run time | Execution |
+3 billion rows, 12,000 partitions. The six computes were run in turn, then once more in the same order, with nothing else running.
+
+| Compute | Run 1 | Run 2 | Execution (run 1, run 2) |
 | --- | --- | --- | --- |
-| 300M rows, 1,200 partitions | `serverless_small`, three runs | 18, 20, 19 s | 15, 16, 15 s |
-| 300M rows, 1,200 partitions | `serverless_2xlarge`, three runs | 18, 18, 18 s | 15, 15, 15 s |
-| 3B rows, 12,000 partitions | `serverless_small` | 88 s | 85 s |
-| 3B rows, 12,000 partitions | `serverless_2xlarge` | 87 s | 84 s |
-| 3B rows, 12,000 partitions | Default Automated Compute | 87 s | 84 s |
+| Default Automated Compute | 100 s | 85 s | 96 s, 82 s |
+| `serverless_small` | 85 s | 84 s | 82 s, 81 s |
+| `serverless_medium` | 86 s | 85 s | 83 s, 81 s |
+| `serverless_large` | 85 s | 85 s | 82 s, 82 s |
+| `serverless_xlarge` | 86 s | 84 s | 82 s, 81 s |
+| `serverless_2xlarge` | 85 s | 84 s | 82 s, 81 s |
 
-The three runs on each size at 300M rows were alternated and run with nothing else running.
+Run IDs: 117537509803166, 1122114748202329, 55775752580577, 103990228681410, 430078633615789, 946764141949496 (run 1) and 591171405696319, 557353743118759, 484684747004306, 227569007417951, 224215265422759, 1124744628457940 (run 2), in the order of the table.
 
-## Runs left out
-
-- The first run on `serverless_small` took 35 s, against 18 to 20 s for every later run. It was the first run on a new object, so it is treated as a cold start.
-- An earlier batch of 300M row runs included one run of 23 s on `serverless_2xlarge` that overlapped with another job running at the same time. The runs above were repeated without any overlap.
-
-## Pointing a job at an object
-
-| Method | Result |
-| --- | --- |
-| Bundle, `serverless_compute.policy_id` on a job cluster | Worked. The job read back the object's ID, and ran on it. |
-| Jobs UI, Configure compute policy, then Update Configuration and Save task | Worked on a job created by hand. The job read back the object's ID, and the run succeeded in 24 s. |
-| Jobs UI on a job deployed by a bundle | The task form is read only, with the banner "This task was deployed as part of a bundle, avoid editing this copy, instead edit the source and redeploy the bundle." |
-
-The UI dropdown listed Default Automated Compute, `serverless_2xlarge` and `serverless_small`, and no interactive object.
+Earlier runs on `serverless_small` and `serverless_2xlarge` at 300M rows (18 to 20 s each, three runs per size) and at 3B rows (88 s and 87 s) agree with these.
 
 ## Permissions
 
 | Object | Permissions read back |
 | --- | --- |
 | Default Automated Compute | `users` Can Use (direct), `admins` Can Manage (inherited) |
-| `serverless_small` | the creator Can Manage (direct), `admins` Can Manage (inherited) |
-| `serverless_2xlarge` | the creator Can Manage (direct), `admins` Can Manage (inherited) |
+| A new custom object | the creator Can Manage (direct), `admins` Can Manage (inherited) |
 
 ## Not covered
 
-- Tags on an object. The tag key list in the create dialog is made of governed tags such as `class.*` and `ai.*`, and none was set.
-- Sizes other than Small and 2X-Large.
-- Interactive access and Databricks Connect, and Lakeflow pipelines.
-- Whether the size is enforced. The workspace has no Previews page and no rate limit setting, and the run times were the same on every size.
+- Tags on an object. The tag keys in the create dialog are governed tags, and none was set.
+- Interactive objects, Databricks Connect and Lakeflow pipelines.
+- Whether the size cap is enforced. The run times were the same on every size.

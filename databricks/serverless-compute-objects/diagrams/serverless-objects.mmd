@@ -4,17 +4,23 @@ config:
   theme: neutral
 ---
 flowchart LR
-    U["All workspace users<br/>(Can Use by default)"]
-    A["Admins and the creator<br/>(Can Manage)"]
-    I["Default Interactive Compute<br/>notebooks, Databricks Connect"]
-    D["Default Automated Compute<br/>jobs, Lakeflow pipelines"]
-    S["serverless_small<br/>custom object, Small"]
-    X["serverless_2xlarge<br/>custom object, 2X-Large"]
-    J["A job<br/>names an object by its ID"]
-    U --> I
-    U --> D
-    A --> S
-    A --> X
-    D --> J
-    S --> J
-    X --> J
+    D["Default Automated Compute"]
+    S["serverless_small"]
+    M["serverless_medium"]
+    L["serverless_large"]
+    X["serverless_xlarge"]
+    XX["serverless_2xlarge"]
+    J["One job<br/>deployed with a bundle<br/>object ID as a variable"]
+    R["Run time of each run"]
+    J --> D
+    J --> S
+    J --> M
+    J --> L
+    J --> X
+    J --> XX
+    D --> R
+    S --> R
+    M --> R
+    L --> R
+    X --> R
+    XX --> R

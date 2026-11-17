@@ -1,32 +1,36 @@
 # Databricks serverless compute objects
 
-Serverless compute used to be something you simply used. Now a workspace has serverless compute objects that you can see on the Serverless tab of the Compute page, and you can create your own with a name and a size, point jobs at them, and control who can use them. This folder creates two custom objects, `serverless_small` and `serverless_2xlarge`, points the same job at each of them, and compares the runs, on a Databricks Free Edition workspace.
+Serverless compute is no longer only something you use. On the Serverless tab of the Compute page you can create your own serverless compute objects, each with a name and a size, and point a job at one. This folder creates an object for every size, runs the same job on each of them with a bundle, and compares the run times.
 
 ```mermaid
 flowchart LR
-    U["All workspace users<br/>(Can Use by default)"]
-    A["Admins and the creator<br/>(Can Manage)"]
-    I["Default Interactive Compute<br/>notebooks, Databricks Connect"]
-    D["Default Automated Compute<br/>jobs, Lakeflow pipelines"]
-    S["serverless_small<br/>custom object, Small"]
-    X["serverless_2xlarge<br/>custom object, 2X-Large"]
-    J["A job<br/>names an object by its ID"]
-    U --> I
-    U --> D
-    A --> S
-    A --> X
-    D --> J
-    S --> J
-    X --> J
+    D["Default Automated Compute"]
+    S["serverless_small"]
+    M["serverless_medium"]
+    L["serverless_large"]
+    X["serverless_xlarge"]
+    XX["serverless_2xlarge"]
+    J["One job<br/>deployed with a bundle<br/>object ID as a variable"]
+    R["Run time of each run"]
+    J --> D
+    J --> S
+    J --> M
+    J --> L
+    J --> X
+    J --> XX
+    D --> R
+    S --> R
+    M --> R
+    L --> R
+    X --> R
+    XX --> R
 ```
 
-## What objects there are
+## The objects
 
-Every workspace has two default objects that cannot be deleted. Default Interactive Compute governs notebooks and Databricks Connect, and Default Automated Compute governs jobs and Lakeflow pipelines. A job that names no object runs on Default Automated Compute.
+Every workspace has two default objects that cannot be deleted: Default Interactive Compute for notebooks and Databricks Connect, and Default Automated Compute for jobs and Lakeflow pipelines. A job that names no object runs on Default Automated Compute. You can add your own automated objects, each with a name, a size, an ID and optional governed tags.
 
-You can add your own automated objects. Each has a name, a size, an ID and optional governed tags.
-
-![The Serverless tab with the two defaults and the two objects created for this test](tests/screenshots/serverless-tab.png)
+![The Serverless tab with the two defaults and the five objects created for this test](tests/screenshots/serverless-tab.png)
 
 ## Requirements
 
@@ -40,18 +44,18 @@ export DATABRICKS_BUNDLE_ENGINE=direct
 ## Create an object
 
 1. Open Compute, then the Serverless tab, and choose Create serverless compute.
-2. Give it a name and pick a size: Default, Small, Medium, Large, X-Large or 2X-Large. Tags are optional, and the tag keys are governed tags.
-3. Create it. Open it to see its ID, type, size and creator. Edit changes the name and size, and the Actions menu on the list has Edit permissions, Copy compute ID and Delete.
+2. Give it a name and a size: Default, Small, Medium, Large, X-Large or 2X-Large. Tags are optional.
+3. Create it, open it and copy its ID.
 
 ![The create dialog with the size options](tests/screenshots/create-dialog.png)
 
 ![The detail page of serverless_small](tests/screenshots/object-detail.png)
 
-Copy the ID. A job refers to an object by its ID, not by its name.
+This test uses five objects, one per size: `serverless_small`, `serverless_medium`, `serverless_large`, `serverless_xlarge` and `serverless_2xlarge`.
 
 ## Point a job at an object
 
-**With a bundle.** Put the object's ID in a job cluster with `serverless_compute.policy_id`, and give the task that job cluster's key. This bundle takes the ID as a variable:
+Put the object's ID in a job cluster with `serverless_compute.policy_id` and give the task that job cluster's key. This bundle takes the ID as a variable:
 
 ```yaml
 job_clusters:
@@ -68,18 +72,11 @@ tasks:
 ```bash
 cd databricks/serverless-compute-objects
 databricks bundle deploy --var compute_id=<object id>
+databricks bundle run serverless_objects_demo
 databricks jobs get <job id>
 ```
 
-`jobs get` should show the ID under `job_clusters`. The ID of Default Automated Compute works there too.
-
-**In the Jobs UI.** Open the job, then Tasks, select the task, and click the pencil next to Compute, which is labelled Configure compute policy. Choose the object, click Update Configuration, and then click Save task. The dialog only stages the change, so the job does not change until Save task. The Jobs API then shows the same `serverless_compute.policy_id` as the bundle.
-
-![The compute policy dropdown lists the default object and the custom ones](tests/screenshots/ui-select-object.png)
-
-A job that a bundle deployed cannot be edited this way. Its task form is read only, with a banner telling you to edit the source and redeploy. Use the UI on jobs you created by hand.
-
-![A bundle-managed task is read only in the UI](tests/screenshots/bundle-locked.png)
+`jobs get` shows the ID under `job_clusters`. The ID of Default Automated Compute works there too.
 
 ## Who can use an object
 
@@ -88,7 +85,7 @@ A job that a bundle deployed cannot be edited this way. Its task form is read on
 | Default Automated Compute | `users` Can Use, `admins` Can Manage (inherited) |
 | A new custom object | The creator Can Manage and `admins` Can Manage (inherited). The `users` group has no access. |
 
-So a new object is private until you grant access. Read and change the permissions with:
+A new object is private until you grant access:
 
 ```bash
 databricks permissions get serverless-compute <object id>
@@ -96,26 +93,17 @@ databricks permissions update serverless-compute <object id> \
   --json '{"access_control_list":[{"group_name":"<group>","permission_level":"CAN_USE"}]}'
 ```
 
-The update call adds an entry and keeps the others. Setting the list with `permissions set` replaces it, so read the permissions first and save them.
+The update call adds an entry and keeps the others. `permissions set` replaces the whole list, so read the permissions first.
 
-## The size
+## Result
 
-The size belongs to the rate limit feature, which caps how far a job's Spark executors can autoscale. In this test it changed nothing: the same workload took the same time on `serverless_small`, `serverless_2xlarge` and the default compute. The numbers are in `tests/results.md`. The workspace has no Previews page and no rate limit setting, so the cap was most likely not enforced, but that was not confirmed.
+The same job, 3 billion rows in 12,000 partitions, ran twice on every size. The run time was 84 to 86 seconds on all five objects and on the default compute, apart from the first run on the default compute, which took 100 seconds. The size made no difference to the run time. The numbers are in `tests/results.md`.
 
-## Run the comparison
-
-```bash
-databricks bundle deploy --var compute_id=<serverless_small id>
-databricks bundle run serverless_objects_demo
-databricks bundle deploy --var compute_id=<serverless_2xlarge id>
-databricks bundle run serverless_objects_demo
-```
-
-The job parameters `rows` and `partitions` scale the workload. Start with the defaults, because Free Edition limits how much compute you can use. Run each size more than once: the first run on a new object was slower than the rest.
+The size belongs to the rate limit feature, which caps how far a job's Spark executors can autoscale. A cap only matters when a workload would scale past it.
 
 ## Cleanup
 
-Delete the job and its files with `databricks bundle destroy`, and delete the objects you created from the Actions menu on the Serverless tab. The default objects cannot be deleted.
+Delete the job with `databricks bundle destroy`, and delete the objects from the Actions menu on the Serverless tab. The default objects cannot be deleted.
 
 ## Reference
 
