@@ -1,0 +1,42 @@
+bundle:
+  name: serverless-access-control
+
+variables:
+  sp_application_id:
+    description: Application ID of the service principal the probe job runs as.
+  owner_group:
+    description: Workspace group that can manage the resources
+    default: admins
+  compute_id:
+    description: Id of the serverless compute object the job runs on. The default is Default Automated Compute, which is where a job runs when it names no object.
+    default: 66c36de7-c991-3857-8248-d289a92730c1
+
+resources:
+  jobs:
+    sp_serverless_probe:
+      name: sp_serverless_probe
+      max_concurrent_runs: 1
+      run_as:
+        service_principal_name: ${var.sp_application_id}
+      job_clusters:
+        - job_cluster_key: serverless_object
+          serverless_compute:
+            policy_id: ${var.compute_id}
+      tasks:
+        - task_key: probe
+          job_cluster_key: serverless_object
+          notebook_task:
+            notebook_path: ./src/probe.py
+
+targets:
+  prod:
+    default: true
+    mode: production
+    workspace:
+      root_path: /Workspace/Deployments/${bundle.name}/${bundle.target}
+    permissions:
+      - group_name: ${var.owner_group}
+        level: CAN_MANAGE
+      # The run as identity needs read access to the deployed notebook
+      - service_principal_name: ${var.sp_application_id}
+        level: CAN_VIEW
