@@ -1,17 +1,18 @@
 bundle:
-  name: serverless-rate-limits
+  name: serverless-compute-objects
 
 variables:
   compute_id:
-    description: Id of the automated serverless compute object that carries the rate limit. In the UI, open the object, use the kebab menu and choose Copy compute ID.
+    description: Id of the serverless compute object the job runs on. In the UI, open the Serverless tab of Compute and use the Actions menu to copy it. The default is Default Automated Compute.
+    default: 66c36de7-c991-3857-8248-d289a92730c1
   owner_group:
     description: Workspace group that can manage the resources
     default: admins
 
 resources:
   jobs:
-    rate_limit_workload:
-      name: rate_limit_workload
+    serverless_objects_demo:
+      name: serverless_objects_demo
       max_concurrent_runs: 1
       parameters:
         - name: rows
@@ -19,12 +20,12 @@ resources:
         - name: partitions
           default: "1200"
       job_clusters:
-        - job_cluster_key: rate_limited
+        - job_cluster_key: serverless_object
           serverless_compute:
             policy_id: ${var.compute_id}
       tasks:
         - task_key: workload
-          job_cluster_key: rate_limited
+          job_cluster_key: serverless_object
           notebook_task:
             notebook_path: ./src/workload.py
             base_parameters:

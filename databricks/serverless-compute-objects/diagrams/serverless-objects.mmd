@@ -1,0 +1,20 @@
+---
+config:
+  look: handDrawn
+  theme: neutral
+---
+flowchart LR
+    U["All workspace users<br/>(Can Use by default)"]
+    A["Admins and the creator<br/>(Can Manage)"]
+    I["Default Interactive Compute<br/>notebooks, Databricks Connect"]
+    D["Default Automated Compute<br/>jobs, Lakeflow pipelines"]
+    S["serverless_small<br/>custom object, Small"]
+    X["serverless_2xlarge<br/>custom object, 2X-Large"]
+    J["A job<br/>names an object by its ID"]
+    U --> I
+    U --> D
+    A --> S
+    A --> X
+    D --> J
+    S --> J
+    X --> J
