@@ -99,7 +99,9 @@ The update call adds an entry and keeps the others. `permissions set` replaces t
 
 The same job, 3 billion rows in 12,000 partitions, ran twice on every size. The run time was 84 to 86 seconds on all five objects and on the default compute, apart from the first run on the default compute, which took 100 seconds. The size made no difference to the run time. The numbers are in `tests/results.md`.
 
-The size belongs to the rate limit feature, which caps how far a job's Spark executors can autoscale. A cap only matters when a workload would scale past it.
+The size belongs to the rate limit feature, which caps how far a job's Spark executors can autoscale. The docs mark rate limits as Beta and say a workspace admin turns them on from the Previews page with the Serverless Compute Rate Limit setting. This workspace has no Previews page, so the size was most likely not enforced, which fits the identical run times.
+
+These access controls do not cover Databricks SQL, batch inference with `ai_query()`, Model Serving, Databricks Apps or Lakebase.
 
 ## Cleanup
 
