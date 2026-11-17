@@ -1,0 +1,26 @@
+---
+config:
+  look: handDrawn
+  theme: neutral
+---
+flowchart LR
+    D["Default Automated Compute"]
+    S["serverless_small"]
+    M["serverless_medium"]
+    L["serverless_large"]
+    X["serverless_xlarge"]
+    XX["serverless_2xlarge"]
+    J["One job<br/>deployed with a bundle<br/>object ID as a variable"]
+    R["Run time of each run"]
+    J --> D
+    J --> S
+    J --> M
+    J --> L
+    J --> X
+    J --> XX
+    D --> R
+    S --> R
+    M --> R
+    L --> R
+    X --> R
+    XX --> R
