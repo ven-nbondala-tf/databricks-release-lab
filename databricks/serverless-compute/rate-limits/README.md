@@ -28,7 +28,7 @@ export DATABRICKS_BUNDLE_ENGINE=direct
 3. Deploy the bundle with that id:
 
 ```bash
-cd databricks/serverless-rate-limits
+cd databricks/serverless-compute/rate-limits
 databricks bundle deploy --var compute_id=<compute id>
 ```
 
