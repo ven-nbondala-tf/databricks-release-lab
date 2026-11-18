@@ -1,0 +1,8 @@
+<!doctype html><meta charset="utf-8"><body style="margin:0;font-family:Helvetica,Arial,sans-serif;background:#fff;color:#1b2540">
+<style>table{border-collapse:collapse;width:1100px;font-size:22px}th{background:#1b2540;color:#fff;text-align:left;padding:14px 18px}td{padding:14px 18px;vertical-align:top;line-height:1.35;border-bottom:1px solid #dde1ec}tr:nth-child(even) td{background:#f4f6fa}td:first-child{font-weight:bold;width:560px}.y{color:#1a7f37;font-weight:bold}.n{color:#b42318;font-weight:bold}.t{color:#9a6700;font-weight:bold}</style>
+<table id="t"><tr><th>Situation</th><th>Use ECU?</th></tr>
+<tr><td>Adding a few columns to a table with large payloads or embeddings</td><td><span class="y">Yes</span></td></tr>
+<tr><td>Updates done with MERGE</td><td><span class="n">No</span>, MERGE does not use it</td></tr>
+<tr><td>Tables that use change data feed or UniForm</td><td><span class="n">No</span>, incompatible</td></tr>
+<tr><td>Lakeflow pipelines</td><td><span class="n">No</span>, not supported</td></tr>
+<tr><td>Critical production tables</td><td><span class="t">Test first</span>, the feature cannot be dropped</td></tr></table></body>
