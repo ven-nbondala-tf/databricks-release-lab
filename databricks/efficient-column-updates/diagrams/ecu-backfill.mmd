@@ -1,0 +1,17 @@
+---
+config:
+  look: handDrawn
+  theme: neutral
+---
+flowchart TB
+    subgraph W["Without Efficient Column Updates"]
+        direction LR
+        A1["UPDATE"] --> A2["Each data file is rewritten,<br/>unchanged columns included"]
+        A2 --> A3["Old files are set aside"]
+    end
+    subgraph E["With Efficient Column Updates"]
+        direction LR
+        B1["UPDATE"] --> B2["Original files are kept,<br/>new values go to separate column files"]
+        B2 --> B3["Queries combine both<br/>into one table"]
+    end
+    W ~~~ E
