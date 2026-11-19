@@ -4,7 +4,7 @@ Subtitle: Databricks AI explained: what Genie One, Genie Agents, Genie Code, Zer
 
 Databricks AI now has many new names, and older articles still use the old ones. Genie One, Genie Agents, Genie Code, Genie ZeroOps, Unity Gateway, Agent Bricks and AI Functions all work on top of Unity Catalog, and it is hard to tell what each one does or who it is for. This guide explains each product in the same four parts, shows how they connect, and ends with a table that tells you which one to use and when. The fact sheet and diagrams for this guide are on GitHub: [ai-overview](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/ai-overview).
 
-[VIDEO: https://youtu.be/aMSk4GJJdaU]
+[VIDEO: https://www.youtube.com/watch?v=6O1-VdOnSzY]
 Caption: A short visual tour of how the pieces fit together.
 
 ## The new names
@@ -94,7 +94,7 @@ The dashed arrow shows that model and tool calls are governed at the gateway. Th
 4. It runs the code and fixes problems using the output.
 5. You review the result.
 
-Genie Code is available in the workspace, as the Genie Code CLI in your terminal (generally available), and as a task in a Lakeflow Job. The job task is set up in the Jobs UI only. For an example, see the [Genie Code failure investigator](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/genie-code-failure-investigator), a job task that investigates failed jobs.
+Genie Code is available in the workspace, as the Genie Code CLI in your terminal (generally available), and as a task in a Lakeflow Job. The job task is set up in the Jobs UI only. For an example of a Genie Code job task that investigates failed jobs, see [this article](https://medium.com/@nagarajubru/my-databricks-job-now-investigates-its-own-failures-and-emails-me-the-fix-87a3cf02a9d0) and its [code on GitHub](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/genie-code-failure-investigator).
 
 **Use it when.** You want help writing, running and fixing code, in the workspace, in a terminal or as a step in a job.
 
@@ -111,7 +111,7 @@ Genie Code is available in the workspace, as the Genie Code CLI in your terminal
 4. It proposes a fix. For jobs backed by Git, you can create a pull request after you confirm.
 5. You approve. Genie ZeroOps does not change production data or code unless you approve the change.
 
-You set up ZeroOps and apply its fixes through Genie Code.
+You set up ZeroOps and apply its fixes through Genie Code. For a do-it-yourself comparison, see [a job that investigates its own failures and emails the report](https://medium.com/@nagarajubru/my-databricks-job-now-investigates-its-own-failures-and-emails-me-the-fix-87a3cf02a9d0), built with a Genie Code job task.
 
 **Good to know.** If you name your repository's default branch, Genie ZeroOps commits the fix directly to that branch, and the change skips pull request review.
 
