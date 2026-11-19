@@ -4,7 +4,7 @@ Subtitle: Databricks AI explained: what Genie One, Genie Agents, Genie Code, Zer
 
 Databricks AI now has many new names, and older articles still use the old ones. Genie One, Genie Agents, Genie Code, Genie ZeroOps, Unity Gateway, Agent Bricks and AI Functions all work on top of Unity Catalog, and it is hard to tell what each one does or who it is for. This guide explains each product in the same four parts, shows how they connect, and ends with a table that tells you which one to use and when. The fact sheet and diagrams for this guide are on GitHub: [ai-overview](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/ai-overview).
 
-[VIDEO: YouTube link]
+[VIDEO: https://youtu.be/aMSk4GJJdaU]
 Caption: A three-minute visual tour of how the pieces fit together.
 
 ## The new names
