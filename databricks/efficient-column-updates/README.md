@@ -1,5 +1,7 @@
 # Efficient Column Updates in Databricks Delta Lake
 
+Article: [Efficient Column Updates in Databricks Delta Lake Explained](https://medium.com/@nagarajubru/efficient-column-updates-databricks-delta-lake-a147627ce0d8)
+
 Efficient Column Updates (ECU) lets Databricks backfill a new Delta Lake column without rewriting the unchanged columns of every affected data file. The new values go to separate column files, and queries still return one table. The feature is in Beta.
 
 This folder holds the SQL used in the article. It is based on the official documentation: [Efficient column updates](https://learn.microsoft.com/en-us/azure/databricks/tables/features/efficient-column-updates).
