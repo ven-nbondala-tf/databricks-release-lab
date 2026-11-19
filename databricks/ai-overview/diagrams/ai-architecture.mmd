@@ -1,0 +1,17 @@
+---
+config:
+  look: handDrawn
+  theme: neutral
+---
+flowchart TB
+    subgraph T["Six tools"]
+        direction LR
+        ZO["Genie ZeroOps"] -- "set up and fixes through" --> GC["Genie Code"]
+        GO["Genie One"] -- "routes questions" --> GA["Genie Agents"]
+        AB["Agent Bricks"] -- "calls as tools" --> GA
+        AF["AI Functions"]
+    end
+    GW["Unity Gateway<br/>permissions, rate limits and budgets,<br/>PII guardrails, usage logs"]
+    UC["Unity Catalog<br/>data, access control, lineage"]
+    T -. "model and tool calls" .-> GW
+    GW --> UC
