@@ -5,14 +5,14 @@ Subtitle: Databricks AI explained: what Genie One, Genie Agents, Genie Code, Zer
 Databricks AI now has many new names, and older articles still use the old ones. Genie One, Genie Agents, Genie Code, Genie ZeroOps, Unity Gateway, Agent Bricks and AI Functions all work on top of Unity Catalog, and it is hard to tell what each one does or who it is for. This guide explains each product in the same four parts, shows how they connect, and ends with a table that tells you which one to use and when. The fact sheet and diagrams for this guide are on GitHub: [ai-overview](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/ai-overview).
 
 [VIDEO: https://youtu.be/aMSk4GJJdaU]
-Caption: A three-minute visual tour of how the pieces fit together.
+Caption: A short visual tour of how the pieces fit together.
 
 ## The new names
 
-Four products changed names. Old documentation links for the first two now open the new pages.
+Four products changed names. Old Databricks Assistant documentation links now open the Genie Code pages.
 
 - Databricks One is now Genie One.
-- Databricks Assistant is now Genie Code. Old Databricks Assistant documentation links open the Genie Code pages.
+- Databricks Assistant is now Genie Code.
 - Genie Spaces is now Genie Agents.
 - AI Gateway is now Unity Gateway, because it became part of Unity Catalog.
 
@@ -22,7 +22,7 @@ The products sit in three layers. At the bottom, Unity Catalog governs data and 
 
 [image: ai-architecture.png | Caption: Unity Catalog at the bottom, Unity Gateway in the middle and six tools on top. | Alt: A diagram with three layers. Six tools on top: Genie ZeroOps is set up and fixed through Genie Code, Genie One routes questions to Genie Agents, and Agent Bricks calls Genie Agents as tools. A dashed arrow labeled model and tool calls leads to Unity Gateway, which checks permissions, rate limits and budgets, PII guardrails and usage logs. An arrow leads from Unity Gateway to Unity Catalog, which covers data, access control and lineage.]
 
-The dashed arrow shows that model and tool calls are governed at the gateway. The documentation describes this for agents built with Agent Bricks, for AI Functions, and for coding agents, and Genie usage counts toward Unity Gateway budgets.
+The dashed arrow shows that model and tool calls are governed at the gateway. The documentation describes this for agents built with Agent Bricks, for AI Functions, and for coding agents, and the Unity Gateway budgets page lists Genie usage as covered.
 
 ## Unity Catalog
 
@@ -59,10 +59,12 @@ The dashed arrow shows that model and tool calls are governed at the gateway. Th
 **How it works.**
 1. You ask a question in plain language in one chat that spans data, dashboards and apps.
 2. Genie One finds a relevant Genie Agent or data asset. When a question needs deeper domain analysis, it routes the question to the right Genie Agent, for example a sales agent.
-3. The agent writes and runs the SQL.
+3. Genie One, or the Genie Agent it routes to, writes and runs the SQL.
 4. You get the answer as SQL, a results table and a chart, and the sources are cited.
 
-**Use it when.** Business users need answers from data without writing SQL. Usage of Genie One and Genie Agents by users is free through January 31, 2027.
+**Good to know.** Usage of Genie One and Genie Agents by users is free through January 31, 2027. Service principals are excluded from this promotion.
+
+**Use it when.** Business users need answers from data without writing SQL.
 
 ## Genie Agents
 
@@ -92,7 +94,7 @@ The dashed arrow shows that model and tool calls are governed at the gateway. Th
 4. It runs the code and fixes problems using the output.
 5. You review the result.
 
-Genie Code is available in the workspace, as the Genie Code CLI in your terminal (generally available), and as a task in a Lakeflow Job. The job task is set up in the Jobs UI only.
+Genie Code is available in the workspace, as the Genie Code CLI in your terminal (generally available), and as a task in a Lakeflow Job. The job task is set up in the Jobs UI only. For an example, see the [Genie Code failure investigator](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/genie-code-failure-investigator), a job task that investigates failed jobs.
 
 **Use it when.** You want help writing, running and fixing code, in the workspace, in a terminal or as a step in a job.
 
@@ -174,9 +176,19 @@ These are the statuses the documentation gives, as of November 2026. Products th
 
 [image: ai-status.png | Caption: Release status as of November 2026. | Alt: A table with three columns: product, status, and source date. Unity Gateway and the Genie Code CLI are generally available. Genie ZeroOps, MCP connectors in Genie Agents, the Agent Bricks CLI and the PII guardrail in Unity Gateway are in Beta. Files in Genie Agents are in Public Preview.]
 
+The same statuses as a list:
+
+- Unity Gateway: generally available (August 4, 2026).
+- Genie Code CLI: generally available (November 18, 2026).
+- Genie ZeroOps: Beta (November 12, 2026).
+- Files in Genie Agents: Public Preview (November 17, 2026).
+- MCP connectors in Genie Agents: Beta (November 9, 2026).
+- Agent Bricks CLI: Beta (November 17, 2026).
+- PII guardrail in Unity Gateway: Beta (August 13, 2026).
+
 ## Summary
 
-Databricks AI is easier to follow once you see the three layers: Unity Catalog governs data and AI assets, Unity Gateway governs the calls AI makes, and six tools sit on top. Genie One, Genie Agents and Genie ZeroOps work without code, Genie Code helps developers, Agent Bricks builds code agents, and AI Functions bring AI into SQL. Start with who will use the product, check its status, and keep Unity Catalog permissions as the foundation.
+Databricks AI is easier to follow once you see the three layers: Unity Catalog governs data and AI assets, Unity Gateway governs the calls AI makes, and six tools sit on top. Genie One and Genie Agents answer questions without code, Genie Code and Genie ZeroOps help engineers write code and fix failing jobs and pipelines, Agent Bricks is for agents written in code, and AI Functions bring AI into SQL. Start with who will use the product, check its status, and keep Unity Catalog permissions as the foundation.
 
 Which of these products would change your own work first?
 
