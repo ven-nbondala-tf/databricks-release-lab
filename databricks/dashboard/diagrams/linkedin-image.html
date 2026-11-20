@@ -1,0 +1,44 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1200px;height:1200px}
+  body{font-family:'Inter',Helvetica,Arial,sans-serif;color:#1E2329;background-color:#F7F5F0;
+    background-image:linear-gradient(#ECE9E2 1px,transparent 1px),linear-gradient(90deg,#ECE9E2 1px,transparent 1px);
+    background-size:40px 40px;position:relative;overflow:hidden}
+  .wrap{position:absolute;left:80px;right:80px;top:80px;bottom:70px}
+  .date{font-size:28px;font-weight:600;color:#5B4BC4;letter-spacing:.2px}
+  h1{margin-top:34px;font-family:'Inter',sans-serif;font-variation-settings:'opsz' 32;font-weight:700;font-size:92px;line-height:1.04;letter-spacing:-2.2px}
+  .lede{margin-top:30px;font-size:33px;line-height:1.38;color:#626872;max-width:960px}
+  .cards{position:absolute;left:0;right:0;top:470px;display:flex;gap:36px}
+  .card{flex:1;border-radius:22px;padding:36px 36px 34px;min-height:430px}
+  .c1{background:#FFFFFF;border:4px solid #5B4BC4}
+  .c2{background:#E1DDEC;border:4px solid #E1DDEC}
+  .card h2{font-size:36px;font-weight:700;line-height:1.2;letter-spacing:-.5px}
+  .rule{height:5px;width:64px;background:#E0663A;border-radius:3px;margin:22px 0 26px}
+  .k{font-size:23px;font-weight:600;color:#626872;margin-top:22px;text-transform:none}
+  .v{font-size:32px;font-weight:600;line-height:1.28;margin-top:6px}
+  .foot{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:baseline;font-size:26px}
+  .foot .l{color:#626872}
+  .foot .r{color:#E0663A;font-weight:700}
+</style></head>
+<body><div class="wrap">
+  <div class="date">November 20, 2026</div>
+  <h1>How dashboards handle<br>permissions and refresh</h1>
+  <p class="lede">Your publish choice decides whose credentials run the queries and which cache answers.</p>
+  <div class="cards">
+    <div class="card c1">
+      <h2>Share data permission (default)</h2><div class="rule"></div>
+      <div class="k">Queries run with</div><div class="v">The publisher's credentials</div>
+      <div class="k">Cache</div><div class="v">One shared cache, all viewers see the same results</div>
+    </div>
+    <div class="card c2">
+      <h2>Individual data permission</h2><div class="rule"></div>
+      <div class="k">Queries run with</div><div class="v">Each viewer's own credentials</div>
+      <div class="k">Cache</div><div class="v">A per user cache, based on each viewer's data permissions</div>
+    </div>
+  </div>
+  <div class="foot"><span class="l">From the Azure Databricks documentation</span><span class="r">Databricks Release Lab</span></div>
+</div></body></html>
