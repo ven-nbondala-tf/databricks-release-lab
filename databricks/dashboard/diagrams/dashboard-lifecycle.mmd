@@ -1,0 +1,14 @@
+---
+config:
+  look: handDrawn
+  theme: neutral
+---
+flowchart TB
+    D["Draft<br/>viewer's own data permissions"] --> P["Publish<br/>choose data permissions"]
+    P --> S["Shared data permissions<br/>publisher's credentials, shared cache"]
+    P --> I["Individual data permissions<br/>viewer's credentials, per user cache"]
+    S --> SH["Share<br/>CAN VIEW, CAN RUN, CAN EDIT, CAN MANAGE"]
+    I --> SH
+    SH --> V["A viewer opens it<br/>dashboard cache, then query result cache,<br/>then the SQL warehouse"]
+    SH --> SC["A schedule runs<br/>refreshes the dashboard cache"]
+    SC --> SU["Subscribers receive a snapshot<br/>PDF by email"]

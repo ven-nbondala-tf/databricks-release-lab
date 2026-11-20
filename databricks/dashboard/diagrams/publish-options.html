@@ -1,0 +1,9 @@
+<!doctype html><meta charset="utf-8"><body style="margin:0;font-family:Helvetica,Arial,sans-serif;background:#fff;color:#1b2540">
+<style>table{border-collapse:collapse;width:1300px;font-size:21px}th{background:#1b2540;color:#fff;text-align:left;padding:14px 18px}td{padding:13px 18px;vertical-align:top;line-height:1.35;border-bottom:1px solid #dde1ec}tr:nth-child(even) td{background:#f4f6fa}td:first-child{font-weight:bold;width:230px}td:nth-child(2),td:nth-child(3){width:535px}</style>
+<table id="t"><tr><th></th><th>Share data permission (default)</th><th>Individual data permission</th></tr>
+<tr><td>Who runs queries</td><td>Viewers run queries using the publisher's data permissions.</td><td>Viewers run queries using their own credentials.</td></tr>
+<tr><td>Whose data permissions</td><td>The publisher's</td><td>Each viewer's own</td></tr>
+<tr><td>Compute</td><td>The publisher's credentials</td><td>Compute access is always granted by the publisher's credentials.</td></tr>
+<tr><td>Who can view</td><td>Users and groups explicitly granted access. Users must be registered with the account, but do not require workspace access.</td><td>Users explicitly granted dashboard access who have data permissions to the underlying data. Workspace membership is not required.</td></tr>
+<tr><td>Cache</td><td>Shared cache. All viewers see the same results.</td><td>Per user cache. Viewers see results based on their data permissions.</td></tr>
+<tr><td>Best for</td><td>Performance, with one shared cache</td><td>Data governance and row-level security enforced for each viewer</td></tr></table></body>
