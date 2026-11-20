@@ -2,9 +2,11 @@
 
 Subtitle: What happens when you publish, share and schedule a Databricks dashboard: whose permissions run the queries, which cache answers, and how to keep it fresh.
 
+Co-authored with Abdul Sajid Mohammed.
+
 Databricks dashboards run every query with someone's permissions and answer it from one of several caches, and the choices you make when you publish decide which. This guide follows an AI/BI dashboard after it is built: you publish it, share it, schedule it and add subscribers. It explains whose credentials run each query, where the results come from, and how to keep the data fresh. The complete code for this guide is on GitHub: [dashboard](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/dashboard).
 
-[VIDEO: YouTube link]
+[VIDEO: https://www.youtube.com/watch?v=yQTWy0OZFVc]
 Caption: A short visual tour of how publishing, permissions and refresh fit together.
 
 ## What happens behind the scenes when a dashboard runs
