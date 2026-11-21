@@ -196,7 +196,7 @@ JOIN <catalog>.forecast_demo.sales_daily a
 GROUP BY f.region;
 ```
 
-The query returns the mean absolute error (MAE) for each region. Running it on each forecast gives this table of the 60 held-out days. It shows the mean absolute error (MAE) for the 60 held-out days. The main finding is the covariate result: a future covariate roughly halved the error, while a past-only covariate gave no real gain. The model can only use what it knows about the forecast window, so planned promotions help and promotions it never sees ahead of time do not. Version 2 with defaults is modestly better than version 1, and holidays help on the holiday days.
+The query returns the mean absolute error (MAE) for each region. Running it on each forecast gives the table below for the 60 held-out days. The main finding is the covariate result: a future covariate roughly halved the error, while a past-only covariate gave no real gain. The model can only use what it knows about the forecast window, so planned promotions help and promotions it never sees ahead of time do not. Version 2 with defaults is modestly better than version 1, and holidays help on the holiday days.
 
 [image: mae-table.png | Caption: Mean absolute error for each forecast on the 60 held-out days, lower is better. | Alt: A table with the East and West mean absolute error for five forecasts. Version 1 with defaults is 40.38 and 33.17. Version 2 with defaults is 36.94 and 32.53. Version 2 with US holidays is 33.77 and 31.29. Version 2 with promo as a future covariate is 21.74 and 16.68. Version 2 with promo as a past-only covariate is 37.67 and 32.75.]
 
