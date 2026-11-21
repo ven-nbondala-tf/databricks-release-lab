@@ -1,0 +1,13 @@
+---
+config:
+  look: handDrawn
+  theme: neutral
+---
+flowchart LR
+    A["History rows<br/>time column and value columns"] --> F["ai_forecast<br/>version => '2'"]
+    B["Optional covariate rows<br/>value NULL over the horizon"] --> F
+    C["Optional arguments<br/>group_col, holiday_region,<br/>positive_only, horizon"] --> F
+    F --> O["Forecast rows only"]
+    O --> V1["value_forecast"]
+    O --> V2["value_upper"]
+    O --> V3["value_lower"]
