@@ -31,6 +31,7 @@ Run the files in order. Each one matches a step or test in the article.
 | `11_holiday_check.sql` | Forecast against actual on Thanksgiving, Christmas and New Year |
 | `12_positive_only_check.sql` | Negative values and lower bounds with and without `positive_only` |
 | `13_grouping_check.sql` | Grouped call against per-region calls |
+| `14_example_accuracy.sql` | The promo forecast saved as a table, and its MAE per region |
 
 ## Expected result
 
@@ -48,7 +49,7 @@ The test data is generated with a fixed rule, so the values repeat on every run 
 
 ## Cleanup
 
-Run `14_cleanup.sql`. It drops the schema `forecast_demo` and every table in it.
+Run `15_cleanup.sql`. It drops the schema `forecast_demo` and every table in it.
 
 ## Diagrams
 
