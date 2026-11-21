@@ -30,7 +30,7 @@ Use a custom model when you need control over the model itself, such as custom f
 
 - A Pro or Serverless SQL warehouse. AI Functions are not available on Classic SQL warehouses.
 - Read access to the table with your history, and permission to create tables if you want to save the forecast.
-- For some workspaces, including those with the compliance security profile, a workspace admin turns on "AI Forecast V2" on the Previews page. It was not needed on a serverless SQL warehouse in a Free Edition workspace.
+- Version 2 ran on a serverless SQL warehouse with no preview setting turned on in the test workspace. The function page says that for some workspaces, including those with the compliance security profile, a workspace admin must turn on "AI Forecast V2" on the Previews page. If version 2 is not available, ask your admin to check that setting.
 
 ## Step 1: Prepare the input
 
@@ -185,7 +185,7 @@ SELECT * FROM AI_FORECAST(
 );
 ```
 
-To measure accuracy, join the forecast to the actual values for the same days. The table shows the mean absolute error (MAE) for the 60 held-out days. Version 2 with defaults is modestly better than version 1, holidays help on the holiday days, and the promo covariate gives the largest gain.
+To measure accuracy, join the forecast to the actual values for the same days. The table shows the mean absolute error (MAE) for the 60 held-out days. The main finding is the covariate result: a future covariate roughly halved the error, while a past-only covariate gave no real gain. The model can only use what it knows about the forecast window, so planned promotions help and promotions it never sees ahead of time do not. Version 2 with defaults is modestly better than version 1, and holidays help on the holiday days.
 
 | Forecast | East MAE | West MAE |
 | --- | --- | --- |
@@ -195,12 +195,12 @@ To measure accuracy, join the forecast to the actual values for the same days. T
 | Version 2 with promo as a future covariate | 21.74 | 16.68 |
 | Version 2 with promo as a past-only covariate | 37.67 | 32.75 |
 
-These numbers come from generated data, so use them to compare the options, not to predict your own accuracy. The full example, including setup and cleanup, is in the [ai-forecast](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/ai-forecast) folder of the repository.
+The data in this guide is generated. It has a built-in promo effect, with promotion days selling 30% more, and built-in dips on US holidays, so these results show how the arguments behave, not the accuracy you will see on real data. Use them to compare the options, and run the same comparison on your own history. The full example, including setup and cleanup, is in the [ai-forecast](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/ai-forecast) folder of the repository.
 
 ## Things to know
 
 - Version 1 is the default. Pass `version => '2'` to use version 2, and do it even after the default changes so your queries state what they use.
-- The version 2 arguments `covariate_col`, `holiday_region` and `positive_only` work only with version 2. With version 1, the query fails with `PYTHON_TVF_UNSUPPORTED_ARGS_FOR_VERSION`. Add `version => '2'` to fix it.
+- The version 2 arguments `covariate_col`, `holiday_region` and `positive_only` work only with version 2. If you leave out `version`, the query fails with `PYTHON_TVF_UNSUPPORTED_ARGS_FOR_VERSION`, for example: "The function `AI_FORECAST` was called with `version => '1'`, which does not support the following argument(s): holiday_region." Add `version => '2'` to fix it.
 - The horizon is right-exclusive, and the output holds forecast rows only. To plot history and forecast together, UNION the history with the result.
 - A future covariate needs rows for the horizon with the covariate filled in and the value column NULL. Without them the covariate is past-only and adds little.
 - The frequency is the mode of the most recent observations in each group. If you set `frequency`, it must match the granularity of your data.
