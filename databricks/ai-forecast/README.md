@@ -1,5 +1,7 @@
 # Forecast in Databricks SQL with ai_forecast
 
+Article: [How to Forecast in Databricks SQL with ai_forecast](https://medium.com/@nagarajubru/how-to-forecast-databricks-sql-ai-forecast-f3dc5d7769d8)
+
 Working code for the guide "How to Forecast in Databricks SQL with ai_forecast". It forecasts two years of generated daily sales with `ai_forecast` version 2, and compares version 1, version 2, holidays, covariates and `positive_only` on a 60 day held-out window.
 
 ## Prerequisites

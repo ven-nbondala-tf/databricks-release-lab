@@ -2,6 +2,8 @@
 
 Subtitle: Use ai_forecast version 2 in Databricks SQL to forecast daily sales with holidays, covariates and non-negative limits, using copyable queries.
 
+Co-authored with [Abdul Sajid Mohammed](https://medium.com/@sajidhawk).
+
 Forecasting usually means exporting data, training a model and writing the results back, so many teams skip it. The `ai_forecast` function in Databricks SQL does the forecast in one query, and version 2 adds holiday support, covariates and non-negative forecasts on top of a time series foundation model. This guide builds a daily sales forecast step by step: you prepare the input, run a basic forecast, switch to version 2, add holidays, add a covariate and constrain the output to non-negative values. In testing, the biggest gain did not come from the new model, but from telling it about planned promotions. The complete code for this guide is on GitHub: [ai-forecast](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/ai-forecast).
 
 [VIDEO: https://www.youtube.com/watch?v=-7MijS-_BKQ]
