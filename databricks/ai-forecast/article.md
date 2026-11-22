@@ -2,10 +2,12 @@
 
 Subtitle: Use ai_forecast version 2 in Databricks SQL to forecast daily sales with holidays, covariates and non-negative limits, using copyable queries.
 
-Forecasting usually means exporting data, training a model and writing the results back, so many teams skip it. The `ai_forecast` function in Databricks SQL does the forecast in one query, and version 2 adds holiday support, covariates and non-negative forecasts on top of a time series foundation model. This guide builds a daily sales forecast step by step: you prepare the input, run a basic forecast, switch to version 2, add holidays, add a covariate and constrain the output to non-negative values. The complete code for this guide is on GitHub: [ai-forecast](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/ai-forecast).
+Co-authored with [Abdul Sajid Mohammed](https://medium.com/@sajidhawk).
 
-[VIDEO: YouTube link]
-Caption: A short walkthrough of forecasting with ai_forecast in Databricks SQL.
+Forecasting usually means exporting data, training a model and writing the results back, so many teams skip it. The `ai_forecast` function in Databricks SQL does the forecast in one query, and version 2 adds holiday support, covariates and non-negative forecasts on top of a time series foundation model. This guide builds a daily sales forecast step by step: you prepare the input, run a basic forecast, switch to version 2, add holidays, add a covariate and constrain the output to non-negative values. In testing, the biggest gain did not come from the new model, but from telling it about planned promotions. The complete code for this guide is on GitHub: [ai-forecast](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/ai-forecast).
+
+[VIDEO: https://www.youtube.com/watch?v=-7MijS-_BKQ]
+Caption: Forecast error for five setups, from version 1 to planned promotions, in 30 seconds.
 
 ## What is ai_forecast in Databricks SQL
 
@@ -30,7 +32,7 @@ Use a custom model when you need control over the model itself, such as custom f
 
 - A Pro or Serverless SQL warehouse. AI Functions are not available on Classic SQL warehouses.
 - Read access to the table with your history, and permission to create tables if you want to save the forecast.
-- For some workspaces, including those with the compliance security profile, a workspace admin turns on "AI Forecast V2" on the Previews page. It was not needed on a serverless SQL warehouse in a Free Edition workspace.
+- Version 2 ran on a serverless SQL warehouse with no preview setting turned on in the test workspace. The function page says that for some workspaces, including those with the compliance security profile, a workspace admin must turn on "AI Forecast V2" on the Previews page. If version 2 is not available, ask your admin to check that setting.
 
 ## Step 1: Prepare the input
 
@@ -47,7 +49,7 @@ CREATE OR REPLACE TABLE <catalog>.forecast_demo.sales_daily (
 );
 ```
 
-The examples use the data before 2026-11-16 as history, and compare the forecast with the 60 days that follow. For your own data, pass all the history you have.
+The examples use the data before 2026-11-16 as history, and compare the forecast with the 60 days that follow. The generated data runs to mid-January 2027, so the last 60 days can act as "actuals" to compare against. With real data, you hold out the most recent 60 days instead, and for the final forecast you pass all the history you have.
 
 ## Step 2: Run a basic forecast
 
@@ -185,7 +187,20 @@ SELECT * FROM AI_FORECAST(
 );
 ```
 
-To measure accuracy, join the forecast to the actual values for the same days. The table shows the mean absolute error (MAE) for the 60 held-out days. Version 2 with defaults is modestly better than version 1, holidays help on the holiday days, and the promo covariate gives the largest gain.
+To measure accuracy, join the forecast to the actual values for the same days and average the absolute difference.
+
+```sql
+SELECT f.region,
+       ROUND(AVG(ABS(f.sales_forecast - a.sales)), 2) AS mae
+FROM <catalog>.forecast_demo.fc_promo f
+JOIN <catalog>.forecast_demo.sales_daily a
+  ON f.ds = a.ds AND f.region = a.region
+GROUP BY f.region;
+```
+
+The query returns the mean absolute error (MAE) for each region. Running it on each forecast gives the table below for the 60 held-out days. The main finding is the covariate result: a future covariate roughly halved the error, while a past-only covariate gave no real gain. The model can only use what it knows about the forecast window, so planned promotions help and promotions it never sees ahead of time do not. Version 2 with defaults is modestly better than version 1, and holidays help on the holiday days.
+
+[image: mae-table.png | Caption: Mean absolute error for each forecast on the 60 held-out days, lower is better. | Alt: A table with the East and West mean absolute error for five forecasts. Version 1 with defaults is 40.38 and 33.17. Version 2 with defaults is 36.94 and 32.53. Version 2 with US holidays is 33.77 and 31.29. Version 2 with promo as a future covariate is 21.74 and 16.68. Version 2 with promo as a past-only covariate is 37.67 and 32.75.]
 
 | Forecast | East MAE | West MAE |
 | --- | --- | --- |
@@ -195,12 +210,12 @@ To measure accuracy, join the forecast to the actual values for the same days. T
 | Version 2 with promo as a future covariate | 21.74 | 16.68 |
 | Version 2 with promo as a past-only covariate | 37.67 | 32.75 |
 
-These numbers come from generated data, so use them to compare the options, not to predict your own accuracy. The full example, including setup and cleanup, is in the [ai-forecast](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/ai-forecast) folder of the repository.
+The data in this guide is generated. It has a built-in promo effect, with promotion days selling 30% more, and built-in dips on US holidays, so these results show how the arguments behave, not the accuracy you will see on real data. Use them to compare the options, and run the same comparison on your own history. The full example, including setup and cleanup, is in the [ai-forecast](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/ai-forecast) folder of the repository.
 
 ## Things to know
 
 - Version 1 is the default. Pass `version => '2'` to use version 2, and do it even after the default changes so your queries state what they use.
-- The version 2 arguments `covariate_col`, `holiday_region` and `positive_only` work only with version 2. With version 1, the query fails with `PYTHON_TVF_UNSUPPORTED_ARGS_FOR_VERSION`. Add `version => '2'` to fix it.
+- The version 2 arguments `covariate_col`, `holiday_region` and `positive_only` work only with version 2. If you leave out `version`, the query fails with `PYTHON_TVF_UNSUPPORTED_ARGS_FOR_VERSION`, for example: "The function `AI_FORECAST` was called with `version => '1'`, which does not support the following argument(s): holiday_region." Add `version => '2'` to fix it.
 - The horizon is right-exclusive, and the output holds forecast rows only. To plot history and forecast together, UNION the history with the result.
 - A future covariate needs rows for the horizon with the covariate filled in and the value column NULL. Without them the covariate is past-only and adds little.
 - The frequency is the mode of the most recent observations in each group. If you set `frequency`, it must match the granularity of your data.
@@ -210,11 +225,11 @@ These numbers come from generated data, so use them to compare the options, not 
 - Hold out the last part of your history, forecast it and compare, as the tables in this guide do, before you trust a forecast.
 - Pass `holiday_region` when your series follows public holidays, and `positive_only` when it cannot go below zero.
 - Add `group_col` instead of writing one call per group. A grouped call returns the same values as separate calls.
-- Save the forecast in a table and schedule the query, so dashboards read a table instead of calling the function.
+- Save the forecast in a table and schedule the query, so [dashboards](https://medium.com/@nagarajubru/databricks-dashboards-permissions-refresh-553e82f3e4a1) read a table instead of calling the function.
 
 ## Summary
 
-`ai_forecast` returns a forecast with an upper and a lower bound from a single SQL query, and version 2 adds holidays, covariates and non-negative forecasts. The main takeaway is that you must pass `version => '2'` to use them, and that planned covariate values give the biggest gain. Use it when your history is in a table and you want a forecast from SQL without training a model.
+`ai_forecast` returns a forecast with an upper and a lower bound from a single SQL query, and version 2 adds holidays, covariates and non-negative forecasts. The two things to remember: pass `version => '2'` to use the new options, and give it your planned covariate values, since that is where the biggest gain came from. Use it when your history is in a table and you want a forecast from SQL without training a model.
 
 Which series in your workspace would you forecast first?
 
@@ -229,4 +244,4 @@ Which series in your workspace would you forecast first?
 - SEO title: How to Forecast in Databricks SQL with ai_forecast
 - SEO description: same as the subtitle
 - Slug: how-to-forecast-databricks-sql-ai-forecast
-- Tags: Databricks, Data Engineering, Forecasting, SQL, Time Series
+- Tags: Databricks, Data Engineering, Forecasting, SQL, Machine Learning

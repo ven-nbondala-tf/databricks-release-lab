@@ -1,0 +1,13 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box;margin:0;padding:0}
+body{width:1400px;background:#F7F5F0;font-family:Inter,Helvetica,Arial,sans-serif;color:#1E2329;padding:50px 70px 56px}
+h1{font-size:32px;font-weight:700} p{font-size:20px;color:#626872;margin:8px 0 28px}
+table{width:100%;border-collapse:collapse;background:#fff;border:3px solid #E1DDEC;border-radius:14px;overflow:hidden}
+th{background:#E1DDEC;text-align:left;font-size:22px;padding:18px 26px;font-weight:700}
+th:not(:first-child),td:not(:first-child){text-align:right;width:230px}
+td{font-size:24px;padding:20px 26px;border-top:2px solid #ECE9E2}
+tr.hl td{background:#fff;font-weight:700;color:#5B4BC4;border-top:2px solid #5B4BC4;border-bottom:2px solid #5B4BC4}
+</style></head><body><h1>Mean absolute error on the 60 held-out days</h1>
+<p>Lower is better. Generated data, so the table compares the options and does not predict real-world accuracy.</p>
+<table><tr><th>Forecast</th><th>East MAE</th><th>West MAE</th></tr><tr class=""><td>Version 1, defaults</td><td>40.38</td><td>33.17</td></tr><tr class=""><td>Version 2, defaults</td><td>36.94</td><td>32.53</td></tr><tr class=""><td>Version 2 with holiday_region US</td><td>33.77</td><td>31.29</td></tr><tr class="hl"><td>Version 2 with promo as a future covariate</td><td>21.74</td><td>16.68</td></tr><tr class=""><td>Version 2 with promo as a past-only covariate</td><td>37.67</td><td>32.75</td></tr></table></body></html>
