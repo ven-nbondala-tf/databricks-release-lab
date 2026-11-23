@@ -1,5 +1,10 @@
 # Databricks tags: data tags and cost tags
 
+Articles:
+
+- Part 1: [Databricks Data Tags Explained: Regular, Governed, System](https://medium.com/@nagarajubru/databricks-data-tags-regular-governed-system-tags-a091a37e6884)
+- Part 2: [Databricks Cost Tags Explained: Default, Custom, Serverless](https://medium.com/@nagarajubru/databricks-cost-tags-default-custom-serverless-5058cebd0b8a)
+
 Working code and test notes for two articles:
 
 - Part 1: Databricks Data Tags Explained: Regular, Governed, System
