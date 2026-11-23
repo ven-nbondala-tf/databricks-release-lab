@@ -1,0 +1,16 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box;margin:0;padding:0}
+body{width:1400px;background:#F7F5F0;font-family:Inter,Helvetica,Arial,sans-serif;color:#1E2329;padding:50px 70px 56px}
+h1{font-size:32px;font-weight:700} p{font-size:20px;color:#626872;margin:8px 0 28px}
+table{width:100%;border-collapse:collapse;background:#fff;border:3px solid #E1DDEC}
+th{background:#E1DDEC;text-align:left;font-size:22px;padding:18px 26px;font-weight:700}
+th:first-child,td:first-child{width:230px;font-weight:700;color:#5B4BC4}
+td{font-size:21px;line-height:1.4;padding:20px 26px;border-top:2px solid #ECE9E2;vertical-align:top}
+</style></head><body><h1>Data tags and cost tags are two separate systems</h1>
+<p>A tag on a table never shows up in the bill. A tag on compute never controls who sees data.</p>
+<table><tr><th></th><th>Data tags</th><th>Cost tags</th></tr>
+<tr><td>What they label</td><td>Catalogs, schemas, tables, columns and volumes. Governed tags also label dashboards, notebooks, apps and Genie Agents.</td><td>Compute and workloads: clusters, pools, SQL warehouses, jobs, and serverless workloads through usage policies.</td></tr>
+<tr><td>Who sets them</td><td>Object owners, or users with APPLY TAG. Governed tags also need ASSIGN.</td><td>Whoever creates the compute or job. Workspace admins create serverless usage policies. Databricks sets the default tags.</td></tr>
+<tr><td>Where you see them</td><td>Catalog Explorer, the information_schema tag views and workspace search.</td><td>The custom_tags column of system.billing.usage, budgets and Azure cost analysis.</td></tr>
+<tr><td>What they are for</td><td>Finding data, governing it, and driving access policies.</td><td>Attributing cost and scoping budgets.</td></tr></table></body></html>
