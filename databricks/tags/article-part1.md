@@ -4,7 +4,7 @@ Subtitle: Databricks data tags label tables, columns and more in Unity Catalog. 
 
 Databricks data tags label the objects in Unity Catalog so you can find, govern and protect your data, and they come in three kinds: regular, governed and system tags. A tag on a table never shows up in the bill, and a tag on compute never controls who sees data, because data tags and cost tags are two separate systems. This guide, part 1 of 2, covers data tags: how to apply them, search them, restrict their values and use them in access policies. The complete code for this guide is on GitHub: [tags](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/tags).
 
-[VIDEO: YouTube link]
+[VIDEO: https://www.youtube.com/watch?v=0AvwmTMrits]
 Caption: Data tags explained in a short video, part 1 of 2.
 
 Part 2 covers cost tags: [Databricks Cost Tags Explained: Default, Custom, Serverless](PART2_LINK).

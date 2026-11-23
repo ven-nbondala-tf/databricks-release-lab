@@ -4,7 +4,7 @@ Subtitle: Databricks cost tags attribute spend to teams and projects. Learn defa
 
 Databricks cost tags attribute compute spend to teams, projects and workloads, and they come as default tags, custom tags and serverless usage policy tags. A tag on compute never controls who sees data, and a tag on a table never shows up in the bill, because cost tags and data tags are two separate systems. This guide, part 2 of 2, covers cost tags: where they are set, what they do and how to read them in `system.billing.usage`, budgets and Azure cost analysis. The complete code for this guide is on GitHub: [tags](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/tags).
 
-[VIDEO: YouTube link]
+[VIDEO: https://www.youtube.com/watch?v=SKvkbf36WQQ]
 Caption: Cost tags explained in a short video, part 2 of 2.
 
 Part 1 covers data tags: [Databricks Data Tags Explained: Regular, Governed, System](PART1_LINK).
