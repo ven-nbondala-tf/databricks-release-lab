@@ -4,10 +4,10 @@ Subtitle: Databricks cost tags attribute spend to teams and projects. Learn defa
 
 Databricks cost tags attribute compute spend to teams, projects and workloads, and they come as default tags, custom tags and serverless usage policy tags. A tag on compute never controls who sees data, and a tag on a table never shows up in the bill, because cost tags and data tags are two separate systems. This guide, part 2 of 2, covers cost tags: where they are set, what they do and how to read them in `system.billing.usage`, budgets and Azure cost analysis. The complete code for this guide is on GitHub: [tags](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/tags).
 
-[VIDEO: https://www.youtube.com/watch?v=SKvkbf36WQQ]
+[VIDEO: https://www.youtube.com/watch?v=VlCy0a8C-KQ]
 Caption: Cost tags explained in a short video, part 2 of 2.
 
-Part 1 covers data tags: [Databricks Data Tags Explained: Regular, Governed, System](PART1_LINK).
+Part 1 covers data tags: [Databricks Data Tags Explained: Regular, Governed, System](https://medium.com/@nagarajubru/databricks-data-tags-regular-governed-system-tags-a091a37e6884).
 
 [image: data-vs-cost-tags.png | Caption: Cost tags and data tags are two separate systems. | Alt: A table comparing data tags and cost tags. It has four rows: what they label, who sets them, where you see them and what they are for.]
 
@@ -140,9 +140,9 @@ Azure cost analysis shows more than the usage table does. Default tags and serve
 
 ## Example: split job cost by project
 
-A team runs several jobs and wants the cost of each project. Each job carries a `project` tag, and the query in Step 6 groups the usage by that tag. In the test, the jobs of one bundle carried the project tag `job-completion-triggers`, and the query returned one row for it: JOBS usage of 1.1015 DBUs.
+A team runs several jobs and wants the cost of each project. Each job carries a `project` tag, and the query in Step 6 groups the usage by that tag. The usage records for the new demo job hadn't arrived yet when this was written, so the result below comes from jobs in the repository that already carried a project tag. The query returned one row, for the project `job-completion-triggers`: JOBS usage of 1.1015 DBUs.
 
-The two tag systems stay apart. The table tags from part 1, `cost_center`, `domain`, `pii` and the rest, are not among the keys in `custom_tags`, and a tag on a job never shows up on a table. Use this query to list the keys that do appear.
+The two tag systems stay apart. The table tags from part 1, `quality`, `domain`, `pii` and the rest, are not among the keys in `custom_tags`, and a tag on a job never shows up on a table. Use this query to list the keys that do appear.
 
 ```sql
 SELECT k AS tag_key, COUNT(*) AS records
@@ -171,7 +171,7 @@ The full example, including setup and cleanup, is in the [tags](https://github.c
 
 ## Summary
 
-Cost tags attribute compute spend: default tags come from Databricks, custom tags come from you, and serverless usage policies tag serverless workloads. The main point is that cost tags reach `system.billing.usage`, budgets and Azure cost analysis, and they never touch your data tags. Use them when you need to answer which team or project spent what.
+Cost tags attribute compute spend: default tags come from Databricks, custom tags come from you, and serverless usage policies tag serverless workloads. Remember that cost tags reach `system.billing.usage`, budgets and Azure cost analysis, and never touch your data tags. Use them when you need to answer which team or project spent what.
 
 Which tag would you add to your jobs first?
 

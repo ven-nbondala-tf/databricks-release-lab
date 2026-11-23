@@ -4,10 +4,10 @@ Subtitle: Databricks data tags label tables, columns and more in Unity Catalog. 
 
 Databricks data tags label the objects in Unity Catalog so you can find, govern and protect your data, and they come in three kinds: regular, governed and system tags. A tag on a table never shows up in the bill, and a tag on compute never controls who sees data, because data tags and cost tags are two separate systems. This guide, part 1 of 2, covers data tags: how to apply them, search them, restrict their values and use them in access policies. The complete code for this guide is on GitHub: [tags](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/tags).
 
-[VIDEO: https://www.youtube.com/watch?v=0AvwmTMrits]
+[VIDEO: https://www.youtube.com/watch?v=k5RLoqz6_EE]
 Caption: Data tags explained in a short video, part 1 of 2.
 
-Part 2 covers cost tags: [Databricks Cost Tags Explained: Default, Custom, Serverless](PART2_LINK).
+Part 2 covers cost tags: [Databricks Cost Tags Explained: Default, Custom, Serverless](https://medium.com/@nagarajubru/databricks-cost-tags-default-custom-serverless-5058cebd0b8a).
 
 [image: data-vs-cost-tags.png | Caption: Data tags and cost tags are two separate systems. | Alt: A table comparing data tags and cost tags. It has four rows: what they label, who sets them, where you see them and what they are for.]
 
@@ -70,25 +70,25 @@ CREATE OR REPLACE TABLE <catalog>.tags_demo.customers (
 
 ## Step 2: Set regular tags
 
-Tags on a parent are shared with its children, so you set a tag at the highest level that makes sense. This example tags the catalog, the schema, the table and one column.
+Tags set on a catalog or schema show up on the objects inside it as inherited tags, so you can set a tag at the highest level that makes sense. This example tags the catalog, the schema, the table and one column.
 
 ```sql
 SET TAG ON CATALOG <catalog> team = data_platform;
 SET TAG ON SCHEMA <catalog>.tags_demo domain = sales;
-SET TAG ON TABLE <catalog>.tags_demo.sales_orders cost_center = hr;
+SET TAG ON TABLE <catalog>.tags_demo.sales_orders quality = gold;
 SET TAG ON COLUMN <catalog>.tags_demo.sales_orders.email pii = email;
 ```
 
 Open the table in Catalog Explorer. The Tags section lists the tag set on the table, and the catalog and schema tags appear next to it with a dashed outline to show that they are inherited.
 
-[image: 02-table-tags.png | Caption: The Tags section of the table. The dashed tags are inherited from the schema and the catalog. | Alt: The Policies and Tags sections of a table page. The Tags section shows cost_center hr with a solid outline, and domain sales and team data_platform with dashed outlines.]
+[image: 02-table-tags.png | Caption: The Tags section of the table. The dashed tags are inherited from the schema and the catalog. | Alt: The Policies and Tags sections of a table page. The Tags section shows quality gold with a solid outline, and domain sales and team data_platform with dashed outlines.]
 
 ## Step 3: Remove a tag
 
 `UNSET TAG` takes the object and the tag key. Run it for the table tag and then read the tags again in Step 4.
 
 ```sql
-UNSET TAG ON TABLE <catalog>.tags_demo.sales_orders cost_center;
+UNSET TAG ON TABLE <catalog>.tags_demo.sales_orders quality;
 ```
 
 ## Step 4: Read tags with SQL
@@ -109,19 +109,19 @@ SELECT 'column', catalog_name, schema_name, concat(table_name, '.', column_name)
 FROM <catalog>.information_schema.column_tags WHERE schema_name = 'tags_demo';
 ```
 
-After the `UNSET TAG` the result has the catalog tag `team`, the schema tag `domain` and the column tag `pii`, and the table tag `cost_center` is gone. The tag views only show rows for objects you can access.
+After the `UNSET TAG` the result has the catalog tag `team`, the schema tag `domain` and the column tag `pii`, and the table tag `quality` is gone. The tag views only show rows for objects you can access.
 
 ## Step 5: Search by tag
 
 Workspace search finds tables, views, volumes, functions, models, dashboards and Genie Agents by tag. Type `tag:<key>` or `tag:<key>:<value>` in the search bar. Set the table tag again and search for it.
 
 ```sql
-SET TAG ON TABLE <catalog>.tags_demo.sales_orders cost_center = hr;
+SET TAG ON TABLE <catalog>.tags_demo.sales_orders quality = gold;
 ```
 
-Searching for `tag:cost_center:hr` returns the table that carries the tag directly. Searching for the schema tag `tag:domain:sales` or the catalog tag `tag:team:data_platform` returns no tables, even though the table shows both as inherited. Catalogs, schemas and columns cannot be searched by tag.
+Searching for `tag:quality:gold` returns the table that carries the tag directly. Searching for the schema tag `tag:domain:sales` or the catalog tag `tag:team:data_platform` returns no tables, even though the table shows both as inherited. Catalogs, schemas and columns cannot be searched by tag.
 
-[image: 05-search-by-tag.png | Caption: Searching for tag:cost_center:hr returns the table with that tag. | Alt: The workspace search results page for tag:cost_center:hr. One result, the sales_orders table in tags_demo, shows the tag cost_center hr.]
+[image: 05-search-by-tag.png | Caption: Searching for tag:quality:gold returns the table with that tag. | Alt: The workspace search results page for tag:quality:gold. One result, the sales_orders table in tags_demo, shows the tag quality gold.]
 
 ## Step 6: Create a governed tag
 
@@ -234,7 +234,7 @@ The full example, including setup and cleanup, is in the [tags](https://github.c
 
 ## Summary
 
-Data tags label Unity Catalog objects, and they come as regular tags for simple labels, governed tags with allowed values and permissions, and system tags that Databricks defines. The main point is that tags only describe data, and governed tags are what access policies and propagation use. Start with regular tags for discovery, and move to governed tags when a policy or a value list matters.
+Data tags label Unity Catalog objects, and they come as regular tags for simple labels, governed tags with allowed values and permissions, and system tags that Databricks defines. Remember that tags only describe data: governed tags are what access policies and propagation rely on. Start with regular tags for discovery, and move to governed tags when a policy or a value list matters.
 
 Which tag would you add to your tables first?
 
