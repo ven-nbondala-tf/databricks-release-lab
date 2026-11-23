@@ -1,0 +1,12 @@
+---
+config:
+  look: handDrawn
+  theme: neutral
+---
+flowchart LR
+    D["Default tags<br/>set by Databricks"] --> AZ["Azure cost analysis"]
+    C["Custom tags<br/>compute, pools, SQL warehouses, jobs"] --> U["system.billing.usage<br/>custom_tags"]
+    C --> AZ
+    P["Usage policy tags<br/>serverless workloads"] --> U
+    P --> AZ
+    U --> B["Budgets<br/>scoped by custom tags"]

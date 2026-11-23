@@ -1,0 +1,43 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1200px;height:1200px}
+  body{font-family:'Inter',Helvetica,Arial,sans-serif;color:#1E2329;background-color:#F7F5F0;
+    background-image:linear-gradient(#ECE9E2 1px,transparent 1px),linear-gradient(90deg,#ECE9E2 1px,transparent 1px);
+    background-size:40px 40px;position:relative;overflow:hidden}
+  .wrap{position:absolute;left:80px;right:80px;top:80px;bottom:70px}
+  .pill{display:inline-flex;gap:16px;align-items:center;background:#5B4BC4;color:#fff;border-radius:40px;padding:12px 28px;font-size:26px;font-weight:600}
+  .pill span{font-weight:500;opacity:.9}
+  h1{margin-top:36px;font-variation-settings:'opsz' 32;font-weight:700;font-size:100px;line-height:1.04;letter-spacing:-2.6px}
+  .lede{margin-top:28px;font-size:33px;line-height:1.38;color:#626872;max-width:960px}
+  .card{position:absolute;left:0;top:520px;width:1040px;height:430px;background:#fff;border:4px solid #5B4BC4;border-radius:22px}
+  .chip{display:inline-block;border-radius:10px;padding:6px 14px;font-size:24px;font-weight:600;background:#ECE9E2;color:#1E2329}
+  .chip.g{background:#E1DDEC;color:#5B4BC4}
+  .foot{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:baseline;font-size:26px}
+  .foot .l{color:#626872} .foot .r{color:#E0663A;font-weight:700}
+  .box{position:absolute;border-radius:18px}
+  .rc{position:absolute;left:560px;top:30px;width:430px;height:370px;background:#F7F5F0;border:3px dashed #626872;border-radius:6px;padding:26px 30px;font-size:25px}
+  .rc div.row{display:flex;justify-content:space-between;margin-top:14px}
+  .rc .t{font-weight:700;font-size:28px}
+  .rc hr{border:0;border-top:2px dashed #626872;margin:18px 0}
+</style></head><body><div class="wrap">
+  <div class="pill">Part 2 of 2 <span>Billing</span></div>
+  <h1>Cost tags in<br>Databricks</h1>
+  <p class="lede">Default, custom and usage policy tags show where the spend comes from.</p>
+  <div class="card">
+    <div class="box" style="left:40px;top:70px;width:400px;height:240px;background:#E1DDEC;border:3px solid #5B4BC4;padding:30px">
+      <div style="font-size:30px;font-weight:700">A job</div>
+      <div style="font-size:24px;color:#626872;margin-top:6px">with two custom tags</div>
+      <div style="margin-top:26px"><span class="chip" style="background:#fff">team : data_platform</span></div>
+      <div style="margin-top:14px"><span class="chip" style="background:#fff">project : tags_demo</span></div>
+    </div>
+    <svg style="position:absolute;left:440px;top:170px" width="120" height="40"><line x1="6" y1="20" x2="100" y2="20" stroke="#1E2329" stroke-width="5"/><polygon points="96,6 116,20 96,34" fill="#1E2329"/></svg>
+    <div class="rc"><div class="t">system.billing.usage</div><hr>
+      <div class="row"><span>Usage record</span><span>DBUs</span></div>
+      <div class="row"><span>Usage record</span><span>DBUs</span></div><hr>
+      <div class="row"><span style="color:#5B4BC4;font-weight:700">team : data_platform</span></div>
+      <div class="row"><span style="color:#5B4BC4;font-weight:700">project : tags_demo</span></div></div>
+  </div>
+  <div class="foot"><span class="l">From the Azure Databricks documentation</span><span class="r">Databricks Release Lab</span></div></div></body></html>

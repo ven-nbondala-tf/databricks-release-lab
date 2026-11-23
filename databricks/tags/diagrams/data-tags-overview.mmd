@@ -1,0 +1,14 @@
+---
+config:
+  look: handDrawn
+  theme: neutral
+---
+flowchart LR
+    R["Regular tags<br/>any key and value"] --> O["Catalogs, schemas, tables,<br/>columns, volumes"]
+    S["System tags<br/>system., class., sap., ai."] --> O
+    S --> C["Data classification<br/>class. tags"]
+    G["Governed tags<br/>allowed values, permissions"] --> O
+    G --> W["Dashboards, notebooks,<br/>apps, Genie Agents"]
+    O --> SE["Search<br/>regular and governed"]
+    G --> A["ABAC policies"]
+    G --> P["Propagation<br/>derived tables and views"]
