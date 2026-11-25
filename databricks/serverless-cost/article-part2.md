@@ -4,10 +4,10 @@ Subtitle: Switch Databricks serverless jobs to standard mode, see what one workl
 
 Databricks serverless jobs run in one of two performance modes, and the mode decides how fast compute starts and how many DBUs a run consumes. In part 1 of this series, step 2 was finding compute, and that step can happen in two ways: from a pool of warm compute, or when compute becomes available. This guide explains both modes, shows what one test workload measured in each, and walks through how to switch a job and how to find the jobs worth switching. The complete code for this guide is on GitHub: [serverless-cost](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/serverless-cost).
 
-[VIDEO: add the Part 2 video link here]
+[VIDEO: https://www.youtube.com/watch?v=7BHXkkH3rSI]
 Caption: Standard mode for serverless jobs in a short video, part 2 of 2.
 
-Part 1 follows one job from the Run click to its billing record: [Databricks Serverless Jobs: What Happens When You Press Run](add the Part 1 link after publishing).
+Part 1 follows one job from the Run click to its billing record: [Databricks Serverless Jobs: What Happens When You Press Run](https://medium.com/@nagarajubru/databricks-serverless-jobs-what-happens-when-you-press-run-7ca43060ad2a).
 
 ## What are Databricks serverless performance modes
 

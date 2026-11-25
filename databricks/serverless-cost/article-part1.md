@@ -4,10 +4,10 @@ Subtitle: Follow a Databricks serverless job from the Run click to its billing r
 
 Databricks serverless jobs run on compute that Databricks creates, sizes and upgrades for you, so there is no cluster to configure. This guide follows one job from the moment you press Run to its record in the billing table, in six steps. Along the way you see where each part runs, which settings you give up and what to check before you move a job to serverless. Part 2 covers how to make serverless jobs cost less. The complete code for this guide is on GitHub: [serverless-cost](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/serverless-cost).
 
-[VIDEO: add the Part 1 video link here]
+[VIDEO: https://www.youtube.com/watch?v=G-aN4jXshvs]
 Caption: What happens when you run a serverless job, in a short video, part 1 of 2.
 
-Part 2 is [Cut Databricks Serverless Job Costs with Standard Mode](add the Part 2 link after publishing).
+Part 2 is [Cut Databricks Serverless Job Costs with Standard Mode](https://medium.com/@nagarajubru/cut-databricks-serverless-job-costs-standard-mode-5ca933f92981).
 
 ## Databricks serverless compute at a glance
 
