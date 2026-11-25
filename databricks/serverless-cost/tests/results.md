@@ -96,7 +96,9 @@ List price: $0.35 per DBU for both modes, SKU `PREMIUM_JOBS_SERVERLESS_COMPUTE_U
 
 Per run DBUs range from 1.1006 to 1.3701 in performance optimized mode and from 0.4344 to 0.4646 in standard mode. The same per-run figures from the SQL (`sql/07_cost_per_mode.sql`) give 1.2665 and 0.4429, and the table totals for the demo jobs match the sum of the per-run figures.
 
-Not part of the comparison: the one-time prod job run 415838955932833 (0.4574 DBUs) and the 12B calibration run 983100640924320 (1.0418 DBUs).
+Not part of the comparison: the prod job run 415838955932833 (0.4574 DBUs) and the 12B calibration run 983100640924320 (1.0418 DBUs).
+
+The run 415838955932833 (STANDARD, started 04:51:59 UTC on Nov 24, trigger ONE_TIME, created by the signed-in account, no overriding parameters) was not scheduled: neither bundle job has a schedule, a trigger or continuous mode. The machine that ran `run_alternating.py` went to sleep at 20:20:51 PST (04:20:51 UTC) and woke briefly at 20:51:54 PST (04:51:54 UTC), five seconds before this run started, and woke fully at about 05:07 UTC, when the recorded run 4 started. This fits the script submitting run 4 at the brief wake, losing the response, and the CLI retrying after the full wake. It is not proven. It did not overlap any measured run.
 
 ## Docs queries (run Nov 25, 2026, 02:10 UTC)
 

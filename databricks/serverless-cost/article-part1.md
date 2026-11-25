@@ -1,4 +1,4 @@
-# Databricks Serverless Jobs Explained: From Run to Billing
+# Databricks Serverless Jobs: What Happens When You Press Run
 
 Subtitle: Follow a Databricks serverless job from the Run click to its billing record in six steps, and learn what runs where and which settings change.
 
@@ -43,7 +43,7 @@ The diagram shows the six steps in order.
 
 ### Step 1: The run is scheduled
 
-Pressing Run sends the request to the control plane, the set of backend services that Azure Databricks manages in your Azure Databricks account. The control plane does not process your data. Job run results are stored as workspace system data.
+Pressing Run sends the request to the control plane, the backend services that Azure Databricks manages in your Azure Databricks account, including the web application. The control plane does not process your data, because data is processed in the compute plane. Job run results are stored as workspace system data.
 
 ### Step 2: Compute is found
 
@@ -151,7 +151,7 @@ Which of the six steps surprised you most?
 
 ## Medium settings
 
-- SEO title: Databricks Serverless Jobs Explained: From Run to Billing
+- SEO title: Databricks Serverless Jobs: What Happens When You Press Run
 - SEO description: same as the subtitle
-- Slug: databricks-serverless-jobs-explained-run-to-billing
+- Slug: databricks-serverless-jobs-what-happens-when-you-press-run
 - Tags: Databricks, Data Engineering, Serverless, Cloud Computing, Azure

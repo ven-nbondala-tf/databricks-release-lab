@@ -7,7 +7,7 @@ Databricks serverless jobs run in one of two performance modes, and the mode dec
 [VIDEO: add the Part 2 video link here]
 Caption: Standard mode for serverless jobs in a short video, part 2 of 2.
 
-Part 1 follows one job from the Run click to its billing record: [Databricks Serverless Jobs Explained: From Run to Billing](add the Part 1 link after publishing).
+Part 1 follows one job from the Run click to its billing record: [Databricks Serverless Jobs: What Happens When You Press Run](add the Part 1 link after publishing).
 
 ## What are Databricks serverless performance modes
 
