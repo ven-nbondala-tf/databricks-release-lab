@@ -1,0 +1,32 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1200px;height:1200px}
+  body{font-family:'Inter',Helvetica,Arial,sans-serif;color:#1E2329;background-color:#F7F5F0;
+    background-image:linear-gradient(#ECE9E2 1px,transparent 1px),linear-gradient(90deg,#ECE9E2 1px,transparent 1px);
+    background-size:40px 40px;position:relative;overflow:hidden}
+  .wrap{position:absolute;left:80px;right:80px;top:80px;bottom:70px}
+  .pill{display:inline-flex;gap:16px;align-items:center;background:#5B4BC4;color:#fff;border-radius:40px;padding:12px 28px;font-size:26px;font-weight:600}
+  .pill span{font-weight:500;opacity:.9}
+  h1{margin-top:36px;font-variation-settings:'opsz' 32;font-weight:700;font-size:84px;line-height:1.06;letter-spacing:-2.2px}
+  .lede{margin-top:26px;font-size:33px;line-height:1.38;color:#626872;max-width:960px}
+  .card{position:absolute;left:0;top:480px;width:1040px;height:470px;background:#fff;border:4px solid #5B4BC4;border-radius:22px}
+  .step{position:absolute;width:450px;height:112px;background:#F7F5F0;border:3px solid #E1DDEC;border-radius:14px;display:flex;align-items:center;gap:22px;padding:0 24px;font-size:32px;font-weight:600}
+  .num{flex:none;width:58px;height:58px;border-radius:50%;background:#5B4BC4;color:#fff;font-size:30px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .foot{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:baseline;font-size:26px}
+  .foot .l{color:#626872} .foot .r{color:#E0663A;font-weight:700}
+</style></head><body><div class="wrap">
+  <div class="pill">Part 1 of 2 <span>Serverless jobs</span></div>
+  <h1>What happens when<br>you run a serverless job</h1>
+  <p class="lede">One job, from the click to the billing record, in six steps.</p>
+  <div class="card">
+    <div class="step" style="left:40px;top:38px"><div class="num">1</div>Run scheduled</div>
+    <div class="step" style="left:40px;top:178px"><div class="num">2</div>Compute found</div>
+    <div class="step" style="left:40px;top:318px"><div class="num">3</div>Spark connects</div>
+    <div class="step" style="left:550px;top:38px"><div class="num">4</div>Code isolated</div>
+    <div class="step" style="left:550px;top:178px"><div class="num">5</div>Data read</div>
+    <div class="step" style="left:550px;top:318px"><div class="num">6</div>Usage recorded</div>
+  </div>
+  <div class="foot"><span class="l">From the Azure Databricks documentation</span><span class="r">Databricks Release Lab</span></div></div></body></html>

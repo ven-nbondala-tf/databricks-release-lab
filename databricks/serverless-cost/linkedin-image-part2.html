@@ -1,0 +1,40 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1200px;height:1200px}
+  body{font-family:'Inter',Helvetica,Arial,sans-serif;color:#1E2329;background-color:#F7F5F0;
+    background-image:linear-gradient(#ECE9E2 1px,transparent 1px),linear-gradient(90deg,#ECE9E2 1px,transparent 1px);
+    background-size:40px 40px;position:relative;overflow:hidden}
+  .wrap{position:absolute;left:80px;right:80px;top:80px;bottom:70px}
+  .pill{display:inline-flex;gap:16px;align-items:center;background:#5B4BC4;color:#fff;border-radius:40px;padding:12px 28px;font-size:26px;font-weight:600}
+  .pill span{font-weight:500;opacity:.9}
+  h1{margin-top:36px;font-variation-settings:'opsz' 32;font-weight:700;font-size:100px;line-height:1.04;letter-spacing:-2.6px}
+  .lede{margin-top:28px;font-size:33px;line-height:1.38;color:#626872;max-width:960px}
+  .card{position:absolute;left:0;top:500px;width:1040px;height:450px;background:#fff;border:4px solid #5B4BC4;border-radius:22px}
+  .bar{position:absolute;bottom:92px;width:230px;border-radius:8px 8px 0 0}
+  .val{position:absolute;width:230px;text-align:center;font-size:38px;font-weight:700}
+  .name{position:absolute;width:300px;text-align:center;font-size:26px;font-weight:600;bottom:52px}
+  .base{position:absolute;left:60px;right:60px;bottom:90px;border-top:3px solid #1E2329}
+  .axis{position:absolute;left:40px;top:22px;font-size:24px;color:#626872}
+  .note{position:absolute;left:0;right:0;bottom:14px;text-align:center;font-size:24px;color:#626872}
+  .foot{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:baseline;font-size:26px}
+  .foot .l{color:#626872} .foot .r{color:#E0663A;font-weight:700}
+</style></head><body><div class="wrap">
+  <div class="pill">Part 2 of 2 <span>Cost</span></div>
+  <h1>Standard mode for<br>serverless jobs</h1>
+  <p class="lede">DBUs per run for the same job in each performance mode.</p>
+  <div class="card">
+    <div class="axis">DBUs per run</div>
+    <div class="base"></div>
+    <!-- scale: 190 px per DBU -->
+    <div class="bar" style="left:230px;height:241px;background:#E1DDEC;border:3px solid #5B4BC4;border-bottom:0"></div>
+    <div class="val" style="left:230px;bottom:342px">1.27</div>
+    <div class="name" style="left:195px">Performance optimized</div>
+    <div class="bar" style="left:640px;height:84px;background:#5B4BC4"></div>
+    <div class="val" style="left:640px;bottom:185px;color:#5B4BC4">0.44</div>
+    <div class="name" style="left:605px">Standard</div>
+    <div class="note">One test workload, 6 runs per mode</div>
+  </div>
+  <div class="foot"><span class="l">Measured on our test workload</span><span class="r">Databricks Release Lab</span></div></div></body></html>

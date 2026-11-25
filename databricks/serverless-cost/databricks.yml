@@ -1,0 +1,31 @@
+bundle:
+  name: serverless-cost
+
+variables:
+  catalog:
+    default: <catalog>
+
+resources:
+  jobs:
+    orders_by_customer:
+      name: orders_by_customer_${bundle.target}
+      performance_target: STANDARD
+      tasks:
+        - task_key: aggregate_orders
+          notebook_task:
+            notebook_path: src/workload.py
+            base_parameters:
+              catalog: ${var.catalog}
+
+targets:
+  dev:
+    default: true
+    resources:
+      jobs:
+        orders_by_customer:
+          performance_target: PERFORMANCE_OPTIMIZED
+  prod:
+    resources:
+      jobs:
+        orders_by_customer:
+          performance_target: STANDARD
