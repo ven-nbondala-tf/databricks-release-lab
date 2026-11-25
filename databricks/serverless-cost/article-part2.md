@@ -14,7 +14,7 @@ Part 1 follows one job from the Run click to its billing record: [Databricks Ser
 A performance mode is a job-level setting for serverless jobs and pipelines. It trades startup speed for DBUs: performance optimized mode starts fast and consumes more, and standard mode starts slower and consumes fewer.
 
 - Performance optimized mode is the default. Databricks keeps a pool of warm compute ready, so workloads typically start in less than a minute.
-- Standard mode is for scheduled and batch work. Workloads typically start within 4 to 6 minutes and consume fewer DBUs.
+- Standard mode is for scheduled and batch work. Workloads typically start in 4 to 6 minutes, depending on compute availability, and consume fewer DBUs.
 - Both modes run on the same serverless runtime and produce the same results.
 - You choose the mode for each job and each pipeline schedule. The setting does not apply to interactive serverless notebooks.
 
@@ -49,7 +49,7 @@ These are the DBUs of each pair of runs, in the order they ran:
 | 5 | 1.1426 | 0.4349 |
 | 6 | 1.3700 | 0.4348 |
 
-Three things stand out on this workload:
+On this workload:
 
 - Execution time was nearly the same in both modes, 151 seconds against 155 seconds. The difference in total time, about double, came entirely from startup.
 - Startup in standard mode took between 155 and 186 seconds, about 2.5 to 3 minutes. The documentation gives a typical 4 to 6 minutes and says startup depends on compute availability.
@@ -255,4 +255,4 @@ Which of your jobs could wait a few minutes to start?
 - SEO title: Cut Databricks Serverless Job Costs with Standard Mode
 - SEO description: same as the subtitle
 - Slug: cut-databricks-serverless-job-costs-standard-mode
-- Tags: Databricks, Data Engineering, Serverless, FinOps, Cost Management
+- Tags: Databricks, Serverless, Data Engineering, Cost Optimization, Cloud Computing

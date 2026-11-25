@@ -25,7 +25,7 @@ Serverless compute is available by default in most workspaces and needs no enabl
 
 ## When to use Databricks serverless jobs
 
-Use serverless for jobs when you want to run work without sizing, starting and upgrading compute yourself. The compute guide describes serverless as generally recommended, with faster start-up, automatic scaling and lower cost.
+Use serverless for jobs when you want to run work without sizing, starting and upgrading compute yourself. The compute guide recommends serverless compute for most automated workloads: Azure Databricks manages the infrastructure and scaling, and you choose a performance mode based on the workload's completion and data freshness requirements.
 
 Use classic compute when a job needs something serverless does not offer: custom cluster settings, RDD APIs, R or Scala notebooks, or a run longer than 7 days.
 
@@ -39,9 +39,9 @@ Use classic compute when a job needs something serverless does not offer: custom
 
 The diagram shows the six steps in order.
 
-[image: run-steps.png | Caption: The six steps a serverless job goes through, from the Run click to the billing record. | Alt: A flow diagram with six numbered boxes: run scheduled, compute found, code connects to Spark, code runs in its own space, job reads data, usage recorded.]
+[image: run-steps.png | Caption: The six steps a serverless job goes through, from the Run click to the billing record. | Alt: A flow diagram with six numbered boxes: request reaches the control plane, compute found, code connects to Spark, code runs in its own space, job reads data, usage recorded.]
 
-### Step 1: The run is scheduled
+### Step 1: The request reaches the control plane
 
 Pressing Run sends the request to the control plane, the backend services that Azure Databricks manages in your Azure Databricks account, including the web application. The control plane does not process your data, because data is processed in the compute plane. Job run results are stored as workspace system data.
 
@@ -132,7 +132,7 @@ The full example, including setup and cleanup, is in the [serverless-cost](https
 
 ## Summary
 
-A serverless job goes through six steps: the control plane takes the run, the serverless compute plane runs it, your code connects through Spark Connect, Lakeguard isolates it, Unity Catalog governs the data and the usage lands in `system.billing.usage`. The main takeaway is that serverless removes compute choices, so you move Spark settings, network access and cost checks to the places the steps above describe. Use serverless jobs when you want Databricks to manage the compute, and read Part 2 to see how the performance mode changes what a run costs.
+A serverless job goes through six steps: the request reaches the control plane, the serverless compute plane runs it, your code connects through Spark Connect, Lakeguard isolates it, Unity Catalog governs the data and the usage lands in `system.billing.usage`. Serverless removes compute choices, so Spark settings, network access and cost checks move to the places the six steps describe. Use serverless jobs when you want Databricks to manage the compute, and read Part 2 to see how the performance mode changes what a run costs.
 
 Which of the six steps surprised you most?
 
@@ -154,4 +154,4 @@ Which of the six steps surprised you most?
 - SEO title: Databricks Serverless Jobs: What Happens When You Press Run
 - SEO description: same as the subtitle
 - Slug: databricks-serverless-jobs-what-happens-when-you-press-run
-- Tags: Databricks, Data Engineering, Serverless, Cloud Computing, Azure
+- Tags: Databricks, Serverless, Data Engineering, Cost Optimization, Cloud Computing
