@@ -1,11 +1,16 @@
 # Serverless cost: standard mode and other cost controls
 
+Articles:
+
+- Part 1: [Databricks Serverless Jobs: What Happens When You Press Run](https://medium.com/@nagarajubru/databricks-serverless-jobs-what-happens-when-you-press-run-7ca43060ad2a)
+- Part 2: [Cut Databricks Serverless Job Costs with Standard Mode](https://medium.com/@nagarajubru/cut-databricks-serverless-job-costs-standard-mode-5ca933f92981)
+
 Working code for two guides:
 
-- Part 1: Cut Databricks Serverless Job Costs with Standard Mode
-- Part 2: More Ways to Control Databricks Serverless Costs
+- Part 1: Databricks Serverless Jobs: What Happens When You Press Run
+- Part 2: Cut Databricks Serverless Job Costs with Standard Mode
 
-The bundle deploys one serverless job twice. The `dev` target runs it in performance optimized mode and the `prod` target runs it in standard mode. You run both, then compare the DBUs each mode billed in `system.billing.usage`.
+The bundle deploys one serverless job twice. The `dev` target runs it in performance optimized mode and the `prod` target runs it in standard mode. Part 1 follows this job through the six steps of a serverless run. Part 2 runs both targets and compares the DBUs each mode billed in `system.billing.usage`.
 
 ## What is in this folder
 
