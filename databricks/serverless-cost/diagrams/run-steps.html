@@ -9,7 +9,7 @@ config:
 flowchart TB
     subgraph A[" "]
         direction LR
-        S1["1 Run is scheduled<br/>control plane"] --> S2["2 Compute is found<br/>serverless compute plane"] --> S3["3 Code connects to Spark<br/>Spark Connect"]
+        S1["1 Request reaches<br/>the control plane"] --> S2["2 Compute is found<br/>serverless compute plane"] --> S3["3 Code connects to Spark<br/>Spark Connect"]
     end
     subgraph B[" "]
         direction LR
