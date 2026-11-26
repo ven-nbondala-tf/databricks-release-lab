@@ -14,7 +14,7 @@ Part 1 explains how metric views work inside: [Databricks Metric Views Explained
 A parameter is a named value that a caller passes when it queries a metric view. The definition uses the parameter in a measure, a filter, the source or a join, so one definition serves many variants.
 
 - Parameters are generally available, according to the November 13, 2026 release note. The CREATE VIEW page still says Public Preview in its metric view section.
-- Querying a metric view that defines parameters needs Databricks Runtime 18.2 or above, on a SQL warehouse or other compute. A SQL warehouse updates on its own.
+- Querying a metric view that defines parameters needs Databricks Runtime 18.2 or above, on a SQL warehouse or other compute. The feature availability page says a SQL warehouse is automatically updated with the latest Databricks SQL compute version, so you don't manage runtime versions the way you do for a cluster.
 - You call the metric view like a table-valued function and pass values by name, by position, or not at all to use the defaults.
 - Each parameter has a name, a data type such as `double`, `int`, `string` or `date`, and an optional default.
 - A dashboard can pass a value into a parameter through a filter widget.
@@ -185,7 +185,7 @@ The full example, including setup and cleanup, is in the [metric-views](https://
 - Write a date default as a SQL date literal. A default of `'1992-01-01'` or `1992-01-01` fails, although the documentation says only that the default must be castable to the data type: `[METRIC_VIEW_INVALID_VIEW_DEFINITION] The metric view definition is invalid. Reason: Parameter 'start_date' default value '1992-01-01' is not compatible with declared type 'date': IntegerType (of class org.apache.spark.sql.types.IntegerType$). SQLSTATE: 42K0E`. `DATE'1992-01-01'` works.
 - Do not materialize a metric view that defines parameters. Adding a `materialization` block fails: `[METRIC_VIEW_INVALID_VIEW_DEFINITION] The metric view definition is invalid. Reason: Materialization is not supported on parameterized metric views.. SQLSTATE: 42K0E`.
 - Treat a value list as a suggestion. The documentation says a value list holds at most 50 values, works with string and numeric parameters but not date parameters, and does not stop viewers from typing any value that fits the type. Value lists are not included when you export a dashboard as a `.lvdash.json` file.
-- Check the runtime. Querying a metric view that defines parameters needs Databricks Runtime 18.2 or above, and a SQL warehouse updates on its own.
+- Check that your SQL warehouse or compute runs Databricks Runtime 18.2 or above. The feature availability page says a SQL warehouse is automatically updated with the latest Databricks SQL compute version.
 
 ## Best practices
 
@@ -204,6 +204,7 @@ Which scenario in your reports could become a parameter?
 
 - [Use parameters with metric views](https://learn.microsoft.com/en-us/azure/databricks/uc-semantics/metric-views/use-parameters), Microsoft Learn
 - [Metric view YAML reference](https://learn.microsoft.com/en-us/azure/databricks/uc-semantics/metric-views/yaml-reference), Microsoft Learn
+- [Metric view feature availability](https://learn.microsoft.com/en-us/azure/databricks/uc-semantics/metric-views/feature-availability), Microsoft Learn
 - [Query a metric view](https://learn.microsoft.com/en-us/azure/databricks/uc-semantics/metric-views/query), Microsoft Learn
 - [Materialization for metric views](https://learn.microsoft.com/en-us/azure/databricks/uc-semantics/metric-views/materialization), Microsoft Learn
 - [Dashboard datasets](https://learn.microsoft.com/en-us/azure/databricks/dashboards/manage/data-modeling/datasets), Microsoft Learn
