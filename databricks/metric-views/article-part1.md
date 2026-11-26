@@ -4,10 +4,10 @@ Subtitle: Learn how Databricks metric views work inside: dimensions, measures, j
 
 Databricks metric views define a business metric once, in YAML, so every query, dashboard and BI tool computes it the same way. This guide builds a metric view over the TPC-H orders data and then looks inside it with EXPLAIN and the query profile, so you can see what a query really does. You learn how measures are evaluated, how the joins are planned, how filters, composition and materialization behave, and which errors to expect. The complete code for this guide is on GitHub: [metric-views](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/metric-views).
 
-[VIDEO: add the Part 1 video link here]
+[VIDEO: https://www.youtube.com/watch?v=mi_Oi1OcQAg]
 Caption: Databricks metric views explained in a short video, part 1 of 2.
 
-Part 2 covers parameters: [Databricks Metric View Parameters: One Definition, Many Uses](add the Part 2 link after publishing).
+Part 2 covers parameters: [Databricks Metric View Parameters: One Definition, Many Uses](https://medium.com/@nagarajubru/databricks-metric-view-parameters-one-definition-many-uses-e224f9e6bf40).
 
 ## What is a Databricks metric view
 

@@ -4,10 +4,10 @@ Subtitle: Learn how Databricks metric view parameters work: define them in YAML,
 
 Databricks metric view parameters let one metric view definition return different results for different values, such as a discount rate or a start date. This guide adds parameters to a metric view, calls it by name, by position and with defaults, checks where the values land in the query plan, and passes a value from a dashboard with a value list. You also see the exact errors for the rules that trip people up. The complete code for this guide is on GitHub: [metric-views](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/metric-views).
 
-[VIDEO: add the Part 2 video link here]
+[VIDEO: https://www.youtube.com/watch?v=qvC19BHSwW4]
 Caption: Databricks metric view parameters in a short video, part 2 of 2.
 
-Part 1 explains how metric views work inside: [Databricks Metric Views Explained: How They Work Inside](add the Part 1 link after publishing).
+Part 1 explains how metric views work inside: [Databricks Metric Views Explained: How They Work Inside](https://medium.com/@nagarajubru/databricks-metric-views-explained-how-they-work-inside-ead394abdcb1).
 
 ## What are Databricks metric view parameters
 
