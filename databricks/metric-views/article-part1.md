@@ -7,7 +7,36 @@ Databricks metric views define a business metric once, in YAML, so every query, 
 [VIDEO: https://www.youtube.com/watch?v=mi_Oi1OcQAg]
 Caption: Databricks metric views explained in a short video, part 1 of 2.
 
+The video explains the ideas with six made-up orders. This guide tests them on the TPC-H sample data.
+
 Part 2 covers parameters: [Databricks Metric View Parameters: One Definition, Many Uses](https://medium.com/@nagarajubru/databricks-metric-view-parameters-one-definition-many-uses-e224f9e6bf40).
+
+## Metric views in plain words
+
+Start with six made-up orders.
+
+| order | region | month | customer | amount |
+| --- | --- | --- | --- | --- |
+| 1 | North | Jan | Ana | 100 |
+| 2 | North | Feb | Ben | 50 |
+| 3 | South | Jan | Cy | 200 |
+| 4 | South | Feb | Dan | 100 |
+| 5 | West | Jan | Eli | 100 |
+| 6 | West | Feb | Ana | 50 |
+
+A dimension is a column you group by, such as region or month. A measure is something you calculate over the rows in each group, such as revenue, which is `SUM(amount)`. Group the orders by region and each region's rows are added up: North 150, South 300, West 150. Group the same rows by month and the same definition gives Jan 400 and Feb 200.
+
+A ratio shows why this matters. Revenue per customer is revenue divided by the number of different customers. By region it is 150 / 2 = 75 for North, 300 / 2 = 150 for South and 150 / 2 = 75 for West. Averaging those three gives 100, which is wrong. For all six orders it is 600 / 5 = 120, because Ana ordered in two regions and counts once. The ratio has to be recalculated from the rows for whatever grouping you ask for.
+
+A metric view stores the definition of each dimension and measure once. You read a measure with the `MEASURE()` function, which applies the stored definition to the grouping in your query. For a metric view called `sales_metrics`:
+
+```sql
+SELECT region, MEASURE(revenue) AS revenue
+FROM sales_metrics
+GROUP BY region;
+```
+
+The rest of this guide builds a real one and looks inside it.
 
 ## What is a Databricks metric view
 
@@ -15,9 +44,9 @@ A metric view is a Unity Catalog object that holds a semantic definition in YAML
 
 - Dimensions are the columns you use in SELECT, WHERE and GROUP BY. The documentation calls them fields and accepts `dimensions` as a synonym.
 - Measures are aggregate expressions such as `SUM` or `COUNT`. You read them with `MEASURE()`, or with `AGG()` in Databricks Runtime 18.1 and above.
-- Creating and querying a metric view works from Databricks Runtime 16.4, on a SQL warehouse or other compute. Newer features need newer runtimes, and a SQL warehouse updates on its own.
+- Creating and querying a metric view works from Databricks Runtime 16.4, on a SQL warehouse or other compute. Newer features need newer runtimes. The feature availability page says a SQL warehouse is automatically updated with the latest Databricks SQL compute version, so you don't manage runtime versions the way you do for a cluster.
 - Dashboards, Genie, alerts, BI tools and plain SQL can all query a metric view.
-- The November 13, 2026 release note says metric view parameters are generally available. The CREATE VIEW page still says Public Preview in its metric view section, and the overview, create and query pages show no status. Query-time joins are in Beta.
+- The CREATE VIEW page says Public Preview in its metric view section, and the overview, create and query pages show no status. Query-time joins are in Beta.
 
 The diagram shows the path of a query: the consumer sends a grouping, the metric view definition supplies the joins, filter, dimensions and measures, and the plan reads the source tables the grouping needs.
 
@@ -31,7 +60,7 @@ A regular view is enough when you only need a fixed table shape, such as a clean
 
 ## Prerequisites
 
-- A Unity Catalog workspace and a SQL warehouse. Parameters, query-time joins and some other features need newer runtimes, listed in the feature availability table below.
+- A Unity Catalog workspace and a SQL warehouse. Query-time joins and some other features need newer runtimes, listed on the feature availability page.
 - `SELECT` on the source tables, `USE CATALOG` on the catalog, and `USE SCHEMA` and `CREATE TABLE` on the schema where you create the metric view.
 - Serverless compute and Databricks Runtime 17.3 or above, only for materialization.
 
@@ -41,7 +70,48 @@ This guide uses the `samples.tpch` tables and a schema called `metric_demo`.
 
 ### Step 1: Define the metric view
 
-The definition lives in a `CREATE VIEW ... WITH METRICS` statement. This one has a fact source, a snowflake join from orders to customer to nation, five dimensions, and six measures: a count, a sum, a ratio, a filtered measure, a window measure and a measure composed from two others.
+Start small. This metric view has a source, two dimensions and two measures.
+
+```sql
+CREATE OR REPLACE VIEW <catalog>.metric_demo.orders_metrics
+WITH METRICS
+LANGUAGE YAML
+AS $$
+version: 1.1
+source: samples.tpch.orders
+dimensions:
+  - name: order_year
+    expr: year(o_orderdate)
+  - name: order_status
+    expr: o_orderstatus
+measures:
+  - name: order_count
+    expr: COUNT(1)
+  - name: total_revenue
+    expr: SUM(o_totalprice)
+$$;
+```
+
+Query it with `MEASURE()` and group by any dimension.
+
+```sql
+SELECT order_year,
+       MEASURE(order_count) AS order_count,
+       MEASURE(total_revenue) AS total_revenue
+FROM <catalog>.metric_demo.orders_metrics
+GROUP BY order_year
+ORDER BY order_year;
+```
+
+The first three years:
+
+| order_year | order_count | total_revenue |
+| --- | --- | --- |
+| 1992 | 1,139,873 | 172,177,707,475.98 |
+| 1993 | 1,138,893 | 172,229,906,369.71 |
+| 1994 | 1,137,944 | 172,079,589,599.59 |
+
+Now extend it to the full definition. It adds a snowflake join from orders to customer to nation, six dimensions in total, and six measures: a count, a sum, a composed measure, a ratio, a filtered measure and a window measure. `CREATE OR REPLACE VIEW` replaces the small version.
 
 ```sql
 CREATE OR REPLACE VIEW <catalog>.metric_demo.orders_metrics
@@ -382,7 +452,7 @@ The full example, including setup and cleanup, is in the [metric-views](https://
 - Run EXPLAIN on the queries your dashboards send, and check which tables each one reads.
 - Put filters that should always apply in the YAML, and keep query filters for the rest.
 - Use the CTE pattern for results that are already aggregated, and a query-time join when you want the measures computed for the joined grouping.
-- Check the feature availability table before you rely on a feature, because it lists the runtime each one needs.
+- Check the feature availability page before you rely on a feature, because it lists the runtime each one needs.
 
 ## Summary
 

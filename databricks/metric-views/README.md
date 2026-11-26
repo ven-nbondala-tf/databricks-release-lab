@@ -29,7 +29,7 @@ The SQL builds one metric view over the `samples.tpch` tables, then looks inside
 
 ## Prerequisites
 
-- A Unity Catalog workspace and a SQL warehouse on a recent runtime. Parameters need Databricks Runtime 18.2 or above and query-time joins are listed under Runtime 19, and a SQL warehouse updates on its own.
+- A Unity Catalog workspace and a SQL warehouse on a recent runtime. Parameters need Databricks Runtime 18.2 or above and query-time joins are listed under Runtime 19. The feature availability page says a SQL warehouse is automatically updated with the latest Databricks SQL compute version.
 - Read access to `samples.tpch`.
 - `USE CATALOG` on your catalog and `USE SCHEMA` and `CREATE TABLE` on the schema `metric_demo`.
 - Materialization needs serverless compute.
