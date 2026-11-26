@@ -372,7 +372,7 @@ The full example, including setup and cleanup, is in the [metric-views](https://
 ## Things to know
 
 - Wrap every measure in `MEASURE()`. A query that reads a measure without it fails: `[METRIC_VIEW_MISSING_MEASURE_FUNCTION] The usage of measure column [total_revenue] of a metric view requires a MEASURE() (or AGG()) function to produce results. SQLSTATE: 42K0E`.
-- Expose the join column as a field before you join at query time. Joining on a source column that is not a field fails: `[UNRESOLVED_COLUMN.WITH_SUGGESTION] A column, variable, or function parameter with name `o`.`o_custkey` cannot be resolved. Did you mean one of the following? [`c`.`c_custkey`, `c`.`c_name`, `o`.`customer_key`, `c`.`c_phone`, `o`.`nation`]. SQLSTATE: 42703`.
+- Expose the join column as a field before you join at query time. Joining on a source column that is not a field fails: `` [UNRESOLVED_COLUMN.WITH_SUGGESTION] A column, variable, or function parameter with name `o`.`o_custkey` cannot be resolved. Did you mean one of the following? [`c`.`c_custkey`, `c`.`c_name`, `o`.`customer_key`, `c`.`c_phone`, `o`.`nation`]. SQLSTATE: 42703 ``.
 - Do not use a metric view with one-to-many YAML joins as an input to a query-time join. The documentation lists it as unsupported, and the query fails with `[METRIC_VIEW_UNSUPPORTED_USAGE] The metric view usage is not supported.`, followed by the logical plan. Query-time joins are in Beta, and the documentation lists them under Databricks Runtime 19.
 - Set `rely: at_most_one_match` on a join only when it is true. The documentation says it is not validated at runtime, and measures are incorrect if the joined side fans out.
 
