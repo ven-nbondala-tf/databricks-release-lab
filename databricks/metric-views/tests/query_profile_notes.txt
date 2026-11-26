@@ -1,0 +1,33 @@
+Query profile notes (not part of the article)
+
+Query: SELECT nation, MEASURE(total_revenue) AS rev FROM release_lab.metric_demo.orders_metrics GROUP BY nation ORDER BY rev DESC
+Run on a serverless SQL warehouse, DBSQL 2026.46. 25 rows returned.
+
+Summary panel
+- Total wall-clock duration: 1 s 349 ms. Result fetching by client: 39 ms.
+- Rows read: 8,250,025. Bytes read: 53.66 MB. Files read: 5. Bytes read from cache: 100%.
+- Rows read equals 7,500,000 (orders) + 750,000 (customer) + 25 (nation).
+- Tasks total time 1.58 s, 91% in Photon. Rows written 0, spill 0.
+
+Graph (28 operators), main path from the bottom:
+- #9 Scan Table (7.50 M rows) -> #8 Shuffle -> #7 Left Outer Join (7.50 M rows out) -> #6 Grouping Aggregate (225 rows) -> #5 Shuffle -> #4 Grouping Aggregate (25 rows) -> #3 Sort -> #2 Columnar To Row -> #1 Result Query Stage.
+- The right input of #7 is the customer side: #19 Scan Table (750 K rows) is joined by #18 Left Outer Join with a nation side, then #17 Sort, #16 Window, #15 Filter, #14 Shuffle, #13 Sort, #12 Window, #11 Filter, #10 Shuffle (750 K rows each) feed #7.
+- The nation side: #28 Scan Table (25 rows), #27 Sort, #26 Window, #25 Filter, #24 Shuffle, #23 Sort, #22 Window, #21 Filter, #20 Shuffle (25 rows each) feed #18.
+- Three Scan Table operators in total (orders, customer, nation), two Left Outer Join operators, and a Sort, Window and Filter chain on each joined side.
+- The profile does not name the tables on the graph nodes; the table names come from EXPLAIN (see explain_dimension.txt).
+
+Catalog Explorer, release_lab.metric_demo.orders_metrics (November 26, 2026)
+- Overview tab: Description, Measures (6) and Fields (6) lists with comment and tag columns. A banner offers to create a wiki.
+- Details tab: Definition (YAML), 56 lines, shows version 1.1, source, nested joins, comment, six fields (dimensions) and six measures including the filtered and the window measure. 16 lines are shown first and a "40 more lines" link expands the rest.
+- Permissions tab: Grant, Revoke, Privileges, Inherited, filter. "No permissions granted yet." (the object has no explicit grants; the creator is the owner).
+- Lineage tab: lists upstream tables orders, customer and nation (samples.tpch), an upstream and downstream query, and the downstream metric view orders_metrics_by_year. "See lineage graph" opens a graph with the three source tables on the left, orders_metrics in the middle (12 columns) and orders_metrics_by_year on the right under Consumers.
+- The metric view card shows a tag team:data_platform that was not set by these scripts (probably inherited from the catalog or schema).
+
+dashboard values (dashboard metric_views_demo, dataset discounted_revenue on orders_discount(discount => :discount); chart: sum of discounted_revenue by order_priority, data labels on)
+- discount 0 (default): 1-URGENT 226.91B, 2-HIGH 226.79B, 3-MEDIUM 226.29B, 4-NOT SPECIFIED 226.83B, 5-LOW 226.63B.
+- discount 0.15: 1-URGENT 192.87B, 2-HIGH 192.77B, 3-MEDIUM 192.35B, 4-NOT SPECIFIED 192.8B, 5-LOW 192.63B.
+- Ratio 0.15 to 0: 192.87 / 226.91 = 0.850. The chart axis rescales (top tick 200B in both), so bar heights look similar; the data labels show the change.
+- The dataset editor labels the value list section "Domain" (the docs call it the Value section). Type Numeric, Numeric type Decimal. Values 0, 0.05, 0.1, 0.15, 0.2 plus one blank row for the next entry.
+- The dataset parameter input is a plain text box in the dataset editor; the value list only appears as a drop-down in the dashboard filter widget (Single value).
+- Clicking a bar in the editor canvas cross-filters the chart (a chip "order_priority: 3-MEDIUM" appears in Global filters); it was cleared before the screenshots.
+- The dashboard is a saved draft in the home folder and was not published.

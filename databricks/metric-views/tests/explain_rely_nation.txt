@@ -1,0 +1,147 @@
+plan
+== Physical Plan ==
+AdaptiveSparkPlan (25)
++- == Initial Plan ==
+   PhotonResultStage (24)
+   +- PhotonColumnarToRow (23)
+      +- PhotonGroupingAgg (22)
+         +- PhotonShuffleExchangeSource (21)
+            +- PhotonShuffleMapStage (20)
+               +- PhotonShuffleExchangeSink (19)
+                  +- PhotonGroupingAgg (18)
+                     +- PhotonProject (17)
+                        +- PhotonShuffledHashJoin LeftOuter (16)
+                           :- PhotonShuffleExchangeSource (4)
+                           :  +- PhotonShuffleMapStage (3)
+                           :     +- PhotonShuffleExchangeSink (2)
+                           :        +- PhotonScan parquet samples.tpch.orders (1)
+                           +- PhotonShuffleExchangeSource (15)
+                              +- PhotonShuffleMapStage (14)
+                                 +- PhotonShuffleExchangeSink (13)
+                                    +- PhotonProject (12)
+                                       +- PhotonBroadcastHashJoin LeftOuter (11)
+                                          :- PhotonScan parquet samples.tpch.customer (5)
+                                          +- PhotonShuffleExchangeSource (10)
+                                             +- PhotonShuffleMapStage (9)
+                                                +- PhotonShuffleExchangeSink (8)
+                                                   +- PhotonProject (7)
+                                                      +- PhotonScan parquet samples.tpch.nation (6)
+
+
+(1) PhotonScan parquet samples.tpch.orders
+Output [2]: [o_custkey#n, o_totalprice#n]
+Location: PreparedDeltaFileIndex [<storage-path>]
+ReadSchema: struct<o_custkey:bigint,o_totalprice:decimal(18,2)>
+
+(2) PhotonShuffleExchangeSink
+Input [2]: [o_custkey#n, o_totalprice#n]
+Arguments: hashpartitioning(o_custkey#n, 16)
+
+(3) PhotonShuffleMapStage
+Input [2]: [o_custkey#n, o_totalprice#n]
+Arguments: ENSURE_REQUIREMENTS, [id=#n]
+
+(4) PhotonShuffleExchangeSource
+Input [2]: [o_custkey#n, o_totalprice#n]
+Arguments: false
+
+(5) PhotonScan parquet samples.tpch.customer
+Output [2]: [c_custkey#n, c_nationkey#n]
+Location: PreparedDeltaFileIndex [<storage-path>]
+ReadSchema: struct<c_custkey:bigint,c_nationkey:bigint>
+RequiredDataFilters: [isnotnull(c_custkey#n)]
+
+(6) PhotonScan parquet samples.tpch.nation
+Output [2]: [n_nationkey#n, n_name#n]
+Location: PreparedDeltaFileIndex [<storage-path>]
+ReadSchema: struct<n_nationkey:bigint,n_name:string>
+RequiredDataFilters: [isnotnull(n_nationkey#n)]
+
+(7) PhotonProject
+Input [2]: [n_nationkey#n, n_name#n]
+Arguments: [n_name#n AS nation#n, n_nationkey#n]
+
+(8) PhotonShuffleExchangeSink
+Input [2]: [nation#n, n_nationkey#n]
+Arguments: SinglePartition
+
+(9) PhotonShuffleMapStage
+Input [2]: [nation#n, n_nationkey#n]
+Arguments: EXECUTOR_BROADCAST, [id=#n]
+
+(10) PhotonShuffleExchangeSource
+Input [2]: [nation#n, n_nationkey#n]
+Arguments: false
+
+(11) PhotonBroadcastHashJoin
+Left keys [1]: [c_nationkey#n]
+Right keys [1]: [n_nationkey#n]
+Join type: LeftOuter
+Join condition: None
+
+(12) PhotonProject
+Input [4]: [c_custkey#n, c_nationkey#n, nation#n, n_nationkey#n]
+Arguments: [nation#n, c_custkey#n]
+
+(13) PhotonShuffleExchangeSink
+Input [2]: [nation#n, c_custkey#n]
+Arguments: hashpartitioning(c_custkey#n, 16)
+
+(14) PhotonShuffleMapStage
+Input [2]: [nation#n, c_custkey#n]
+Arguments: ENSURE_REQUIREMENTS, [id=#n]
+
+(15) PhotonShuffleExchangeSource
+Input [2]: [nation#n, c_custkey#n]
+Arguments: false
+
+(16) PhotonShuffledHashJoin
+Left keys [1]: [o_custkey#n]
+Right keys [1]: [c_custkey#n]
+Join type: LeftOuter
+Join condition: None
+
+(17) PhotonProject
+Input [4]: [o_custkey#n, o_totalprice#n, nation#n, c_custkey#n]
+Arguments: [o_totalprice#n, nation#n]
+
+(18) PhotonGroupingAgg
+Input [2]: [o_totalprice#n, nation#n]
+Arguments: [nation#n], [partial_sum(o_totalprice#n) AS (sum#n, isEmpty#n)], [sum#n, isEmpty#n], [nation#n, sum#n, isEmpty#n], false
+
+(19) PhotonShuffleExchangeSink
+Input [3]: [nation#n, sum#n, isEmpty#n]
+Arguments: hashpartitioning(nation#n, 16)
+
+(20) PhotonShuffleMapStage
+Input [3]: [nation#n, sum#n, isEmpty#n]
+Arguments: ENSURE_REQUIREMENTS, [id=#n]
+
+(21) PhotonShuffleExchangeSource
+Input [3]: [nation#n, sum#n, isEmpty#n]
+Arguments: false
+
+(22) PhotonGroupingAgg
+Input [3]: [nation#n, sum#n, isEmpty#n]
+Arguments: [nation#n], [finalmerge_sum(merge sum#n, isEmpty#n) AS sum(o_totalprice)#n], [sum(o_totalprice)#n], [nation#n, sum(o_totalprice)#n AS rev#n], true
+
+(23) PhotonColumnarToRow
+Input [2]: [nation#n, rev#n]
+
+(24) PhotonResultStage
+Input [2]: [nation#n, rev#n]
+
+(25) AdaptiveSparkPlan
+Output [2]: [nation#n, rev#n]
+Arguments: isFinalPlan=false
+
+
+== Photon Explanation ==
+The query is fully supported by Photon.
+== Optimizer Statistics (table names per statistics state) ==
+  missing = customer, nation, orders
+  partial = 
+  full    = 
+Corrective actions: consider running the following command on all tables with missing or partial statistics
+  ANALYZE TABLE <table-name> COMPUTE STATISTICS FOR ALL COLUMNS
+

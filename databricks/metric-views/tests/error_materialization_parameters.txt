@@ -1,0 +1,1 @@
+{'state': 'FAILED', 'error': {'error_code': 'BAD_REQUEST', 'message': '[METRIC_VIEW_INVALID_VIEW_DEFINITION] The metric view definition is invalid. Reason: Materialization is not supported on parameterized metric views.. SQLSTATE: 42K0E'}, 'sql_state': '42K0E'}

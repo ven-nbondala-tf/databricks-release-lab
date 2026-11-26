@@ -1,0 +1,1 @@
+date default '1992-01-01' (string in YAML): [METRIC_VIEW_INVALID_VIEW_DEFINITION] The metric view definition is invalid. Reason: Parameter 'start_date' default value '1992-01-01' is not compatible with declared type 'date': IntegerType (of class org.apache.spark.sql.types.IntegerType$). SQLSTATE: 42K0E

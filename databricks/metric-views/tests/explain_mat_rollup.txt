@@ -1,0 +1,39 @@
+plan
+== Physical Plan ==
+AdaptiveSparkPlan (5)
++- == Initial Plan ==
+   PhotonResultStage (4)
+   +- PhotonColumnarToRow (3)
+      +- PhotonGroupingAgg (2)
+         +- PhotonScan parquet release_lab.metric_demo.__materialization_<id>___metric_view_mat_<id>_by_year_status_1 (1)
+
+
+(1) PhotonScan parquet release_lab.metric_demo.__materialization_<id>___metric_view_mat_<id>_by_year_status_1
+Output [2]: [order_year#n, total_revenue#n]
+Location: PreparedDeltaFileIndex [<storage-path>]
+ReadSchema: struct<order_year:int,total_revenue:decimal(28,2)>
+
+(2) PhotonGroupingAgg
+Input [2]: [order_year#n, total_revenue#n]
+Arguments: [order_year#n], [sum(total_revenue#n)], [sum(total_revenue)#n], [order_year#n, cast(sum(total_revenue)#n as decimal(28,2)) AS measure(total_revenue)#n], true
+
+(3) PhotonColumnarToRow
+Input [2]: [order_year#n, measure(total_revenue)#n]
+
+(4) PhotonResultStage
+Input [2]: [order_year#n, measure(total_revenue)#n]
+
+(5) AdaptiveSparkPlan
+Output [2]: [order_year#n, measure(total_revenue)#n]
+Arguments: isFinalPlan=false
+
+
+== Photon Explanation ==
+The query is fully supported by Photon.
+== Optimizer Statistics (table names per statistics state) ==
+  missing = __materialization_<id>___metric_view_mat_<id>_by_year_status_1
+  partial = 
+  full    = 
+Corrective actions: consider running the following command on all tables with missing or partial statistics
+  ANALYZE TABLE <table-name> COMPUTE STATISTICS FOR ALL COLUMNS
+

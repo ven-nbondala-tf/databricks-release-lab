@@ -1,0 +1,1 @@
+{'state': 'FAILED', 'error': {'error_code': 'BAD_REQUEST', 'message': '[UNRESOLVED_COLUMN.WITH_SUGGESTION] A column, variable, or function parameter with name `o`.`o_custkey` cannot be resolved. Did you mean one of the following? [`c`.`c_custkey`, `c`.`c_name`, `o`.`customer_key`, `c`.`c_phone`, `o`.`nation`]. SQLSTATE: 42703; line 1 pos 132'}, 'sql_state': '42703'}
