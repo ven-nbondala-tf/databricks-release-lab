@@ -1,4 +1,4 @@
-# Databricks Metric View Parameters: One Definition, Many Variants
+# Databricks Metric View Parameters: One Definition, Many Uses
 
 Subtitle: Learn how Databricks metric view parameters work: define them in YAML, call them by name or position, and pass a value from a dashboard.
 
@@ -13,7 +13,7 @@ Part 1 explains how metric views work inside: [Databricks Metric Views Explained
 
 A parameter is a named value that a caller passes when it queries a metric view. The definition uses the parameter in a measure, a filter, the source or a join, so one definition serves many variants.
 
-- Parameters are generally available, according to the November 13, 2026 release note.
+- Parameters are generally available, according to the November 13, 2026 release note. The CREATE VIEW page still says Public Preview in its metric view section.
 - Querying a metric view that defines parameters needs Databricks Runtime 18.2 or above, on a SQL warehouse or other compute. A SQL warehouse updates on its own.
 - You call the metric view like a table-valued function and pass values by name, by position, or not at all to use the defaults.
 - Each parameter has a name, a data type such as `double`, `int`, `string` or `date`, and an optional default.
@@ -212,7 +212,7 @@ Which scenario in your reports could become a parameter?
 
 ## Medium settings
 
-- SEO title: Databricks Metric View Parameters: One Definition, Many Variants
+- SEO title: Databricks Metric View Parameters: One Definition, Many Uses
 - SEO description: same as the subtitle
-- Slug: databricks-metric-view-parameters-one-definition-many-variants
+- Slug: databricks-metric-view-parameters-one-definition-many-uses
 - Tags: Databricks, Data Engineering, Semantic Layer, Business Intelligence, Unity Catalog

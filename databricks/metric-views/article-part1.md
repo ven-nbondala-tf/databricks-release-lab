@@ -7,7 +7,7 @@ Databricks metric views define a business metric once, in YAML, so every query, 
 [VIDEO: add the Part 1 video link here]
 Caption: Databricks metric views explained in a short video, part 1 of 2.
 
-Part 2 covers parameters: [Databricks Metric View Parameters: One Definition, Many Variants](add the Part 2 link after publishing).
+Part 2 covers parameters: [Databricks Metric View Parameters: One Definition, Many Uses](add the Part 2 link after publishing).
 
 ## What is a Databricks metric view
 
@@ -17,7 +17,7 @@ A metric view is a Unity Catalog object that holds a semantic definition in YAML
 - Measures are aggregate expressions such as `SUM` or `COUNT`. You read them with `MEASURE()`, or with `AGG()` in Databricks Runtime 18.1 and above.
 - Creating and querying a metric view works from Databricks Runtime 16.4, on a SQL warehouse or other compute. Newer features need newer runtimes, and a SQL warehouse updates on its own.
 - Dashboards, Genie, alerts, BI tools and plain SQL can all query a metric view.
-- The CREATE VIEW reference describes the metric view feature as in Public Preview, and the overview, create and query pages show no status. Query-time joins are in Beta.
+- The November 13, 2026 release note says metric view parameters are generally available. The CREATE VIEW page still says Public Preview in its metric view section, and the overview, create and query pages show no status. Query-time joins are in Beta.
 
 The diagram shows the path of a query: the consumer sends a grouping, the metric view definition supplies the joins, filter, dimensions and measures, and the plan reads the source tables the grouping needs.
 
@@ -190,10 +190,10 @@ GROUP BY nation;
 
 This plan scans `orders`, `customer` and `nation`, joined with two left outer joins, a broadcast hash join and a shuffled hash join. That matches the documentation, which says the fact table joins its dimension tables with a left outer join.
 
-Two more observations from the plans:
+Two more observations from our plans, for this snowflake join of orders, customer and nation:
 
 - A query on `customer_segment`, a column of `customer` only, also scanned `nation`. The nation scan read only the join key, `n_nationkey`.
-- The documentation describes `rely: at_most_one_match` on a join as a way to skip unnecessary joins. With it set on both joins, the `nation` query plan has no window nodes, where the plan without it has eight. The `nation` scan was still there for the `customer_segment` query.
+- With `rely: at_most_one_match` set on both joins, the `nation` query plan has no window nodes, where the plan without it has eight. The documentation describes `rely` as a way to skip unnecessary joins. In our plans the `nation` scan for the `customer_segment` query was still there with `rely` set. Other join shapes and data can give other plans.
 
 ### Step 5: Read the query profile
 
@@ -267,7 +267,7 @@ For Brazil, the revenue per order by year matches the `average_order_value` meas
 
 ### Step 8: Join a metric view to another table
 
-Query-time joins are in Beta. You join a metric view to a table on one of its fields and wrap each measure in `MEASURE()`. The metric view has to expose the join column as a field, here `customer_key`.
+Query-time joins are in Beta, and the documentation lists them under Databricks Runtime 19. You join a metric view to a table on one of its fields and wrap each measure in `MEASURE()`. The metric view has to expose the join column as a field, here `customer_key`.
 
 ```sql
 SELECT c.c_mktsegment,
@@ -279,7 +279,7 @@ GROUP BY c.c_mktsegment
 ORDER BY c.c_mktsegment;
 ```
 
-To join results that you have already aggregated, wrap the metric view query in a common table expression, and the aggregated values become regular columns.
+For results that you have already aggregated, the documentation uses a common table expression (CTE). The aggregated values become regular columns.
 
 ```sql
 WITH orders AS (
@@ -356,6 +356,8 @@ Catalog Explorer shows a metric view like other Unity Catalog objects, with Over
 The Lineage tab lists the three source tables as upstream and the composed metric view from step 7 as downstream. The documentation recommends the Lineage tab to find dependencies before you drop a metric view.
 
 [image: 06-lineage.png | Caption: The lineage graph of the metric view. | Alt: A lineage graph with the orders, nation and customer tables on the left, the orders metrics view in the middle and the orders metrics by year view on the right.]
+
+The `team: data_platform` tag on the metric view cards is inherited from the catalog, where the tag is set. The first part of the tags series, [Databricks Data Tags Explained: Regular, Governed, System](https://medium.com/@nagarajubru/databricks-data-tags-regular-governed-system-tags-a091a37e6884), explains how tags work.
 
 ## Example: one revenue definition for every consumer
 

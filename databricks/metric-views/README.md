@@ -3,7 +3,7 @@
 Working code and test notes for two guides:
 
 - Part 1: Databricks Metric Views Explained: How They Work Inside
-- Part 2: Databricks Metric View Parameters: One Definition, Many Variants
+- Part 2: Databricks Metric View Parameters: One Definition, Many Uses
 
 The SQL builds one metric view over the `samples.tpch` tables, then looks inside it with EXPLAIN and the query profile, and adds parameters in a second metric view that a dashboard calls.
 

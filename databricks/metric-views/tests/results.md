@@ -89,7 +89,7 @@ Dashboard `metric_views_demo` (saved draft, not published): dataset `discounted_
 
 - Query-time joins: the brief says metric views cannot be joined at query time. The documentation now describes query-time joins (Beta) and the CTE pattern for aggregated results. Both worked.
 - Date default: the documentation says a default only has to be castable to the data type. A quoted date string is rejected, and a SQL date literal is accepted.
-- `rely`: the documentation says it lets the engine skip unneeded joins. In these plans it removed the window nodes but not the `nation` scan.
+- `rely` and join pruning, as observed in our plans for the snowflake join (orders, customer, nation): `rely` removed the window nodes, and the `nation` scan for a customer-only query stayed with `rely` set. The documentation describes `rely` as a way to skip unnecessary joins; other join shapes and data can give other plans.
 - Release status: the CREATE VIEW page calls the feature Public Preview, the November 13, 2026 release note says parameters are generally available, and the other pages show no status.
 - Value list dialog: the section is labelled Domain in the dataset editor, and the documentation calls it the Value section.
 - Not tested: semantic metadata (synonyms, display names), BI compatibility mode, agg() (Runtime 18.1 and above), sharing, relationships between metric views.
