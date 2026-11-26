@@ -1,0 +1,12 @@
+---
+config:
+  look: handDrawn
+  theme: neutral
+---
+flowchart LR
+    A["SQL by name<br/>discount => 0.15"] --> DEF
+    B["SQL by position<br/>(0.15, DATE'1992-01-01')"] --> DEF
+    C["SQL with defaults<br/>metric_view()"] --> DEF
+    D["Dashboard filter<br/>discount => :discount"] --> DEF
+    DEF["One metric view definition<br/>parameters: discount, start_date"] --> R1["discount 0.15<br/>1-URGENT: 192.9 billion"]
+    DEF --> R2["discount 0 (default)<br/>1-URGENT: 226.9 billion"]

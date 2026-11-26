@@ -1,0 +1,2 @@
+result
+The operation has been launched in the background. To check its progress, please visit <workspace-url>/#joblist/pipelines/<pipeline-id>/updates/<update-id>

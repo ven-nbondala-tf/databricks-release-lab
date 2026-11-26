@@ -1,0 +1,20 @@
+<!doctype html><html><head><meta charset="utf-8"><title>how-it-works</title>
+<style>body{margin:0;padding:30px;background:#F7F5F0}</style></head><body>
+<pre class="mermaid">
+---
+config:
+  look: handDrawn
+  theme: neutral
+---
+flowchart TB
+    CON["Consumers<br/>SQL, dashboards, Genie, BI tools"] --> Q["Query<br/>SELECT dimensions, MEASURE(...)<br/>GROUP BY ..."]
+    Q --> DEF["Metric view definition (YAML)<br/>joins, filter, dimensions, measures"]
+    DEF --> P["Plan for that grouping<br/>the fact table, plus the joins the query needs"]
+    P --> S1["orders<br/>fact table"]
+    P --> S2["customer"]
+    P --> S3["nation"]
+</pre>
+<script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs";
+mermaid.initialize({startOnLoad:true});
+</script></body></html>

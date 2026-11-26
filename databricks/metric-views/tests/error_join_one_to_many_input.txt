@@ -1,0 +1,1 @@
+{'state': 'FAILED', 'error': {'error_code': 'BAD_REQUEST', 'message': '[METRIC_VIEW_UNSUPPORTED_USAGE] The metric view usage is not supported. plan: ResolvedMultiSourceMetricView `release_lab`.`metric_demo`.`customers_orders_metrics` ... (the message continues with the logical plan)'}}

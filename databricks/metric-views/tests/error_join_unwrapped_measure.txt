@@ -1,0 +1,1 @@
+{'state': 'FAILED', 'error': {'error_code': 'BAD_REQUEST', 'message': '[METRIC_VIEW_MISSING_MEASURE_FUNCTION] The usage of measure column [total_revenue] of a metric view requires a MEASURE() (or AGG()) function to produce results. SQLSTATE: 42K0E'}, 'sql_state': '42K0E'}

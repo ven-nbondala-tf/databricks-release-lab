@@ -1,0 +1,64 @@
+plan
+== Physical Plan ==
+AdaptiveSparkPlan (10)
++- == Initial Plan ==
+   PhotonResultStage (9)
+   +- PhotonColumnarToRow (8)
+      +- PhotonGroupingAgg (7)
+         +- PhotonShuffleExchangeSource (6)
+            +- PhotonShuffleMapStage (5)
+               +- PhotonShuffleExchangeSink (4)
+                  +- PhotonGroupingAgg (3)
+                     +- PhotonProject (2)
+                        +- PhotonScan parquet samples.tpch.orders (1)
+
+
+(1) PhotonScan parquet samples.tpch.orders
+Output [2]: [o_totalprice#n, o_orderpriority#n]
+Location: PreparedDeltaFileIndex [<storage-path>]
+ReadSchema: struct<o_totalprice:decimal(18,2),o_orderpriority:string>
+
+(2) PhotonProject
+Input [2]: [o_totalprice#n, o_orderpriority#n]
+Arguments: [o_totalprice#n, o_orderpriority#n AS order_priority#n]
+
+(3) PhotonGroupingAgg
+Input [2]: [o_totalprice#n, order_priority#n]
+Arguments: [order_priority#n], [partial_sum(o_totalprice#n) AS (sum#n, isEmpty#n)], [sum#n, isEmpty#n], [order_priority#n, sum#n, isEmpty#n], false
+
+(4) PhotonShuffleExchangeSink
+Input [3]: [order_priority#n, sum#n, isEmpty#n]
+Arguments: hashpartitioning(order_priority#n, 16)
+
+(5) PhotonShuffleMapStage
+Input [3]: [order_priority#n, sum#n, isEmpty#n]
+Arguments: ENSURE_REQUIREMENTS, [id=#n]
+
+(6) PhotonShuffleExchangeSource
+Input [3]: [order_priority#n, sum#n, isEmpty#n]
+Arguments: false
+
+(7) PhotonGroupingAgg
+Input [3]: [order_priority#n, sum#n, isEmpty#n]
+Arguments: [order_priority#n], [finalmerge_sum(merge sum#n, isEmpty#n) AS sum(o_totalprice)#n], [sum(o_totalprice)#n], [order_priority#n, sum(o_totalprice)#n AS measure(total_revenue)#n], true
+
+(8) PhotonColumnarToRow
+Input [2]: [order_priority#n, measure(total_revenue)#n]
+
+(9) PhotonResultStage
+Input [2]: [order_priority#n, measure(total_revenue)#n]
+
+(10) AdaptiveSparkPlan
+Output [2]: [order_priority#n, measure(total_revenue)#n]
+Arguments: isFinalPlan=false
+
+
+== Photon Explanation ==
+The query is fully supported by Photon.
+== Optimizer Statistics (table names per statistics state) ==
+  missing = orders
+  partial = 
+  full    = 
+Corrective actions: consider running the following command on all tables with missing or partial statistics
+  ANALYZE TABLE <table-name> COMPUTE STATISTICS FOR ALL COLUMNS
+

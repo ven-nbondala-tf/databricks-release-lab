@@ -1,0 +1,12 @@
+---
+config:
+  look: handDrawn
+  theme: neutral
+---
+flowchart TB
+    CON["Consumers<br/>SQL, dashboards, Genie, BI tools"] --> Q["Query<br/>SELECT dimensions, MEASURE(...)<br/>GROUP BY ..."]
+    Q --> DEF["Metric view definition (YAML)<br/>joins, filter, dimensions, measures"]
+    DEF --> P["Plan for that grouping<br/>the fact table, plus the joins the query needs"]
+    P --> S1["orders<br/>fact table"]
+    P --> S2["customer"]
+    P --> S3["nation"]

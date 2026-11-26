@@ -1,0 +1,40 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1200px;height:1200px}
+  body{font-family:'Inter',Helvetica,Arial,sans-serif;color:#1E2329;background-color:#F7F5F0;
+    background-image:linear-gradient(#ECE9E2 1px,transparent 1px),linear-gradient(90deg,#ECE9E2 1px,transparent 1px);
+    background-size:40px 40px;position:relative;overflow:hidden}
+  .wrap{position:absolute;left:80px;right:80px;top:80px;bottom:70px}
+  .pill{display:inline-flex;gap:16px;align-items:center;background:#5B4BC4;color:#fff;border-radius:40px;padding:12px 28px;font-size:26px;font-weight:600}
+  .pill span{font-weight:500;opacity:.9}
+  h1{margin-top:36px;font-variation-settings:'opsz' 32;font-weight:700;font-size:100px;line-height:1.04;letter-spacing:-2.6px}
+  .lede{margin-top:28px;font-size:33px;line-height:1.38;color:#626872;max-width:960px}
+  .card{position:absolute;left:0;top:520px;width:1040px;height:430px;background:#fff;border:4px solid #5B4BC4;border-radius:22px}
+  .chip{display:inline-block;border-radius:10px;padding:6px 14px;font-size:24px;font-weight:600;background:#ECE9E2;color:#1E2329}
+  .chip.g{background:#E1DDEC;color:#5B4BC4}
+  .foot{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:baseline;font-size:26px}
+  .foot .l{color:#626872} .foot .r{color:#E0663A;font-weight:700}
+  table{border-collapse:collapse;position:absolute;left:40px;top:150px;width:960px}
+  th{font-size:26px;text-align:left;padding:14px 20px;background:#E1DDEC}
+  td{font-size:26px;padding:16px 20px;border-top:2px solid #ECE9E2}
+  .tags{position:absolute;left:40px;top:34px;display:flex;gap:16px;align-items:center;font-size:24px;color:#626872}
+  .row{position:absolute;left:40px;width:960px;display:flex;align-items:center;gap:22px}
+  .q{flex:0 0 470px;font-family:'SF Mono',Menlo,monospace;font-size:24px;background:#F7F5F0;border:2px solid #E1DDEC;border-radius:12px;padding:16px 18px;line-height:1.35}
+  .arrow{font-size:40px;color:#5B4BC4}
+  .res{flex:1;font-size:30px;font-weight:700;color:#1E2329;line-height:1.3}
+  .res small{display:block;font-size:24px;font-weight:500;color:#626872}
+  .cap{position:absolute;left:40px;top:34px;font-size:26px;color:#626872}
+</style></head><body><div class="wrap">
+  <div class="pill">Generally available, November 13, 2026</div>
+  <h1>One metric view,<br>many variants</h1>
+  <p class="lede">Change the value, not the definition.</p>
+  <div class="card">
+    <div class="cap">Revenue of 1-URGENT orders</div>
+    <div class="row" style="top:96px"><div class="q">metric_view()</div><div class="arrow">&rarr;</div><div class="res">226.9 billion<small>discount 0, the default</small></div></div>
+    <div class="row" style="top:212px"><div class="q">metric_view(discount =&gt; 0.15)</div><div class="arrow">&rarr;</div><div class="res">192.9 billion</div></div>
+    <div class="row" style="top:328px"><div class="q">metric_view(discount =&gt; 0.2)</div><div class="arrow">&rarr;</div><div class="res">181.5 billion</div></div>
+  </div>
+  <div class="foot"><span class="l">One test metric view, three calls</span><span class="r">Databricks Release Lab</span></div></div></body></html>
