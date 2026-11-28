@@ -4,7 +4,7 @@ Subtitle: Choose Databricks token scopes and access levels for BI tools, AI agen
 
 Databricks token scopes limit which APIs a token can call, and without them a personal access token can call every API you can, so a token pasted into a BI tool or an agent hands that tool your full access. Scope modifiers, generally available since November 4, 2026, narrow a scope further to read operations or to read-only SQL queries. This guide shows how to list the scopes, create and test scoped tokens, change them later, and pick the right scopes for six common uses. The complete code for this guide is on GitHub: [databricks/token-scopes](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/token-scopes).
 
-[VIDEO: add the YouTube link here]
+[VIDEO: https://youtu.be/ohhDVVHqtdQ]
 Caption: Databricks token scopes in a short video.
 
 ## What are Databricks token scopes
@@ -15,7 +15,6 @@ A scope limits which Databricks REST API endpoints a token can call. A modifier 
 - `:read` limits a scope to its read operations, which are GET and HEAD requests.
 - `:restricted-query` applies to the `sql` scope only. It allows read-only SQL queries and nothing else in that scope. You can combine it as `sql:read:restricted-query`.
 - Scopes and modifiers work on personal access tokens, on OAuth secrets for service principals, and in the `scope` parameter of an OAuth token request.
-- Scope modifiers are generally available.
 - A personal access token with an empty scopes array has full access, which is the same as the `all-apis` scope.
 
 The diagram shows how a token, its scopes and the modifiers fit together.
@@ -48,11 +47,29 @@ The response has a `scopes` array. Each entry has `name`, `display_name`, `descr
 
 ### Step 2: Create a scoped token
 
-Create the token with the scopes the job needs and a short lifetime. In the UI, go to Settings, Developer, Access tokens, Manage, Generate new token. Choose BI Tools for SQL tools, or Other APIs to select scopes yourself, then pick an access level for each scope.
+Create the token with the scopes the job needs and a short lifetime. In the UI, go to Settings, Developer, and select Manage next to Access tokens.
 
-[image: token-dialog-access-levels.png | Caption: The access levels for the sql scope in the Generate new token dialog. | Alt: The Generate new token dialog with the sql scope added. The access level list shows Read, Restricted query, Read plus Restricted query, and Read plus Restricted query plus Write.]
+[image: ui-01-access-tokens.png | Caption: The Developer page, with the Manage button for access tokens. | Alt: The Developer settings page. Under Access tokens, a Manage button sits on the right.]
 
-For every scope the levels are Read, which is `<scope>:read`, and Read + Write, which is the scope without a modifier. The `sql` scope adds Restricted query, Read + Restricted query and Read + Restricted query + Write.
+On the Access tokens page, select Generate new token. Enter a Name that says what the token is for, set the Lifetime (days), and choose a scope type. BI Tools starts from the `sql` scope. Other APIs lets you choose any scope yourself.
+
+[image: ui-02-generate-token.png | Caption: The Generate new token dialog with a name and a one-day lifetime. | Alt: The Generate new token dialog. The Name is "reporting tool, read only" and the Lifetime is 1 day. Below are the Auto-scope tokens switch, the BI Tools and Other APIs choices, and an Add scope button. No scopes are selected yet.]
+
+Select Add scope and tick the scopes you need. The list has a search box and shows what each scope covers.
+
+[image: ui-03-add-scope.png | Caption: The scope list, with jobs and its neighbours. | Alt: The Add scope list open under the dialog, with a Search scopes box. It lists instance-pools, instance-profiles, jobs, knowledge, knowledge-assistants and lakewatch, each with a tick box and a one-line description.]
+
+Then pick an access level for each scope. For every scope the levels are Read, which is `<scope>:read`, and Read + Write, which is the scope without a modifier. The `sql` scope adds Restricted query, Read + Restricted query and Read + Restricted query + Write.
+
+[image: ui-04-sql-access-levels.png | Caption: The access levels for the sql scope. | Alt: The Generate new token dialog with the sql scope added. The access level list shows Read, Restricted query, Read plus Restricted query, and Read plus Restricted query plus Write.]
+
+Select Generate. The dialog shows the token value once, so copy it into a secret manager before you select Done.
+
+[image: ui-05-token-created.png | Caption: The confirmation after a token is created. The token value is hidden here. | Alt: A dialog that says the token has been created successfully. A field shows the token value as dots, with a warning to copy it now because it cannot be shown again, and a Done button.]
+
+The new token appears in the list with its name, scopes and expiry.
+
+[image: ui-06-token-list.png | Caption: The token in the list, with its scopes and expiry. | Alt: A table row for the token "reporting tool, read only". The Scopes column shows sql:restricted-query, and the Expiration column shows a date one day after the creation date. The token ID is hidden.]
 
 To create the token with the API, send the scopes in the request:
 
@@ -79,7 +96,11 @@ The `SELECT` and `DESCRIBE` statements succeed. An `INSERT`, `CREATE TABLE` or `
 
 ### Step 4: Change the scopes of a token
 
-You can change the scopes of an existing personal access token with a PATCH request. The caller needs the `authentication` scope, or a token with full access.
+You can change the scopes of an existing personal access token. In the UI, open the menu at the end of the token's row, choose Update token, change the scopes and select Update.
+
+[image: ui-07-update-token.png | Caption: The Update token dialog for an existing token. | Alt: The Update token dialog. It shows the token name, the BI Tools and Other APIs choices, an Add scope button, and the sql scope set to Restricted query. Cancel and Update buttons are at the bottom.]
+
+With the API, send a PATCH request. The caller needs the `authentication` scope.
 
 ```bash
 curl -s -X PATCH "<workspace-url>/api/2.0/token/<token-id>" \
@@ -91,7 +112,14 @@ The change took about five minutes in our test, and the documentation says it ca
 
 ### Step 5: Scope an OAuth secret for a service principal
 
-An OAuth secret fixes its scopes when you generate it, and you cannot change them afterwards. In the UI, go to Settings, Identity and access, Service principals, open the service principal, then Secrets, Generate secret, and choose the scopes. Choose specific scopes, not "all APIs".
+An OAuth secret fixes its scopes when you generate it, and you cannot change them afterwards. In the UI, go to Settings, Identity and access, and select Manage next to Service principals. Open the service principal and select the Secrets tab. The table lists each secret with its scopes.
+
+[image: ui-08-sp-secrets.png | Caption: The Secrets tab of a service principal. | Alt: The Secrets tab of a service principal. A table with the columns ID, Created at, Expires at, Last accessed and Scopes shows "No OAuth secrets". A Generate secret button sits below it.]
+
+Select Generate secret. Enter a Lifetime (days), then add specific scopes and set an access level for each. Avoid full access, which the documentation marks as not recommended.
+
+[image: ui-09-sp-secret-scopes.png | Caption: The Generate OAuth secret dialog with the sql scope limited to Restricted query. | Alt: The Generate OAuth secret dialog. The Lifetime is 1 day. The sql scope is added with the access level Restricted query. Cancel and Generate buttons are at the bottom.]
+
 
 Then request an access token with a `scope` parameter. The scopes are separated by spaces:
 
@@ -105,7 +133,7 @@ The access token lasts one hour and carries the scopes you asked for. A token ca
 
 ## Choose Databricks token scopes for each use
 
-Choose scopes by what the token is for. Start with the narrowest option, and if a call fails with a missing-scope error, add the scope that the error names. The sets for BI tools, MCP clients and bundle deployments come from the API scopes reference, not from a run with the real tool, so check them with one allowed call and one refused call before you rely on them.
+Choose scopes by what the token is for. Start with the narrowest option, and if a call fails with a missing-scope error, add the scope that the error names. The sets for BI tools, MCP clients and CI/CD deployment come from the API scopes reference, not from a run with the real tool, so check them with one allowed call and one refused call before you rely on them.
 
 ### Start with the :read trap
 
@@ -212,7 +240,7 @@ The documentation does not say what these cover, so this guide does not recommen
 
 Both carry scopes, but they behave differently.
 
-- A personal access token belongs to one user in one workspace. You set its scopes at creation and can change them later with a PATCH request. It can be valid for up to two years by default, and Databricks revokes it after 90 days without use. A workspace allows up to 600 tokens per user.
+- A personal access token belongs to one user in one workspace. You set its scopes at creation and can change them later with a PATCH request. It can be valid for up to 730 days by default, an admin can set a lower maximum, and Databricks revokes it after 90 days without use. A workspace allows up to 600 tokens per user.
 - An OAuth secret belongs to a service principal. Its scopes are fixed when you generate it, and you create a new secret to change them. The access token it produces lasts one hour, and a token can never exceed the scopes of its secret.
 - A personal access token cannot automate account-level functionality, and PATs do not support `all-apis:read`. OAuth accepts `all-apis:read`, which gives read operations on every API the principal can use.
 
@@ -233,10 +261,12 @@ curl -s -X POST "<workspace-url>/api/2.0/sql/statements" -H "Authorization: Bear
   -H "Content-Type: application/json" \
   -d '{"warehouse_id": "<warehouse-id>", "wait_timeout": "30s", "statement": "SELECT * FROM <catalog>.<schema>.orders"}'
 
-# 3. Refused: INSERT
+# 3. Refused: INSERT. The request body goes in a file, so the SQL can keep its single quotes
+cat > insert.json <<'JSON'
+{"warehouse_id": "<warehouse-id>", "wait_timeout": "30s", "statement": "INSERT INTO <catalog>.<schema>.orders VALUES (2, 'x')"}
+JSON
 curl -s -X POST "<workspace-url>/api/2.0/sql/statements" -H "Authorization: Bearer <scoped-token>" \
-  -H "Content-Type: application/json" \
-  -d '{"warehouse_id": "<warehouse-id>", "wait_timeout": "30s", "statement": "INSERT INTO <catalog>.<schema>.orders VALUES (2, \"x\")"}'
+  -H "Content-Type: application/json" -d @insert.json
 ```
 
 The `SELECT` returns the rows with the state `SUCCEEDED`. The `INSERT` returns the state `FAILED` with `[OP_NOT_SUPPORTED_READ_ONLY]`, and the table keeps its original rows. The full example, including setup, every test call and cleanup, is in the [token-scopes](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/token-scopes) folder of the repository.
@@ -276,7 +306,7 @@ An OAuth token request that asks for more than its secret allows is refused with
 
 ## Summary
 
-Token scopes limit which APIs a Databricks token can call, and the `:read` and `:restricted-query` modifiers narrow a scope to read operations or read-only SQL. The main takeaway is to start from the narrowest scope for the job, check it with one allowed call and one refused call, and read the missing-scope error to add what is missing. Use scoped tokens for every BI tool, agent, script and pipeline, and scoped OAuth secrets for anything that runs on its own.
+Token scopes limit which APIs a Databricks token can call, and the `:read` and `:restricted-query` modifiers narrow a scope to read operations or read-only SQL. Start from the narrowest scope for the job, check it with one allowed call and one refused call, and read the missing-scope error to add what's missing. Use scoped tokens for every BI tool, agent, script and pipeline, and scoped OAuth secrets for anything that runs on its own.
 
 Which of your tokens still has full access?
 
