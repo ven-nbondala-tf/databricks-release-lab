@@ -15,7 +15,6 @@ A scope limits which Databricks REST API endpoints a token can call. A modifier 
 - `:read` limits a scope to its read operations, which are GET and HEAD requests.
 - `:restricted-query` applies to the `sql` scope only. It allows read-only SQL queries and nothing else in that scope. You can combine it as `sql:read:restricted-query`.
 - Scopes and modifiers work on personal access tokens, on OAuth secrets for service principals, and in the `scope` parameter of an OAuth token request.
-- Scope modifiers are generally available.
 - A personal access token with an empty scopes array has full access, which is the same as the `all-apis` scope.
 
 The diagram shows how a token, its scopes and the modifiers fit together.
@@ -134,7 +133,7 @@ The access token lasts one hour and carries the scopes you asked for. A token ca
 
 ## Choose Databricks token scopes for each use
 
-Choose scopes by what the token is for. Start with the narrowest option, and if a call fails with a missing-scope error, add the scope that the error names. The sets for BI tools, MCP clients and bundle deployments come from the API scopes reference, not from a run with the real tool, so check them with one allowed call and one refused call before you rely on them.
+Choose scopes by what the token is for. Start with the narrowest option, and if a call fails with a missing-scope error, add the scope that the error names. The sets for BI tools, MCP clients and CI/CD deployment come from the API scopes reference, not from a run with the real tool, so check them with one allowed call and one refused call before you rely on them.
 
 ### Start with the :read trap
 
