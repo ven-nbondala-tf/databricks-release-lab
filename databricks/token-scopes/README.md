@@ -12,7 +12,7 @@ Scope modifiers (`:read`, `:restricted-query`) are generally available as of Nov
 | `notes/facts.md` | Documentation fact sheet, one row per claim, with URLs |
 | `notes/token-scopes.json` | Response of `GET /api/2.0/token-scopes` from a workspace (61 scopes, no secrets) |
 | `tests/` | The test scripts, their output and `results.md` |
-| `screenshots/` | The Generate new token dialog with the SQL access levels |
+| `screenshots/` | `ui-01` to `ui-09`: the token and service principal secret screens, with token values and IDs hidden |
 | `diagrams/` | The scope and modifier diagram |
 | `decision-table.png`, `linkedin-image.png` | Visuals for the article and the post |
 
@@ -114,4 +114,4 @@ Revoke every test token, delete the test service principal and drop the test sch
 python tests/cleanup.py
 ```
 
-The script revokes the tokens saved in `tests/.tokens.json` and every token whose comment starts with `token-scopes`. Expired tokens return 404 and are skipped. Check Settings, Developer, Access tokens afterwards.
+The script revokes the tokens saved in `tests/.tokens.json` and every token whose comment starts with `token-scopes` or `reporting tool, read only` (the token made in the UI). Expired tokens return 404 and are skipped. Check Settings, Developer, Access tokens afterwards.

@@ -63,9 +63,30 @@ The service principal was created in the workspace. The secret was created with 
 
 A wider request is refused. It is not narrowed silently. The first attempt, before the service principal had SQL access, returned `This API is disabled for users without the databricks-sql-access or workspace-consume entitlements`.
 
-## Test 9: screenshot
+## Test 9: UI screenshots (screenshots/ui-*.png)
 
-`screenshots/token-dialog-access-levels.png` shows the Generate new token dialog with the `sql` scope. The access levels offered are Read, Restricted query, Read + Restricted query, Read + Restricted query + Write. Choosing BI Tools preselects `sql` with Read + Restricted query. The dialog was closed with Cancel and no token was created from it. The Auto-scope tokens switch is present and off.
+Taken in the browser on 2026-11-28. Taken: ui-01 (Developer page with Manage), ui-02 (Generate new token dialog), ui-03 (scope list), ui-04 (sql access levels, replaces the earlier screenshot), ui-05 (token created, value hidden), ui-06 (token list), ui-07 (Update token dialog, cancelled), ui-08 (service principal Secrets tab), ui-09 (Generate OAuth secret dialog with sql set to Restricted query, cancelled, no secret created).
+
+Skipped: ui-10 (the OP_NOT_SUPPORTED_READ_ONLY error in the SQL editor). The SQL editor runs as the signed-in user and cannot use a personal access token, so the article keeps the curl output.
+
+How values were kept off the images:
+- ui-05: the token field shows dots, and the value on the page was overwritten with a placeholder by a script, without being read, before the screenshot. No token value was logged or saved.
+- ui-06: the Token ID column was overwritten with a placeholder before the screenshot, and the crop holds the header and the new token's row only, not the other tokens in the workspace.
+- Crops exclude the workspace URL, the signed-in user and the sidebar. No client IDs, service principal IDs or warehouse IDs appear. ui-09 was cancelled, so no secret was generated.
+- Every image was checked by eye before it was kept.
+
+Findings from the UI:
+- Choosing BI Tools preselects `sql` with Read + Restricted query. Choosing Restricted query switches the scope type shown to Other APIs.
+- The access levels for `sql` are Read, Restricted query, Read + Restricted query and Read + Restricted query + Write, as the documentation says.
+- The token row menu has Update token and Revoke token. Update token changes the name and the scopes. Lifetime in the dialog is in whole days, minimum 1.
+- The Generate OAuth secret dialog needs a Lifetime (days) between 1 and 730 and the same scope picker. It did not show an "all APIs" option on this workspace, although the documentation mentions one.
+- The Auto-scope tokens switch is present and off.
+
+UI tokens and service principal created for the screenshots: one personal access token named "reporting tool, read only" (1 day, `sql:restricted-query`) and one service principal. Both were removed at the end (see Cleanup).
+
+## Example rerun (review note 4)
+
+The example in the article sends the INSERT body from a file with `-d @insert.json` and uses single quotes in the SQL: `INSERT INTO <catalog>.<schema>.orders VALUES (2, 'x')`. It was rerun with a new 15 minute `sql:restricted-query` token. The `SELECT` returned the seed row and the state SUCCEEDED. The `INSERT` returned the state FAILED with `[OP_NOT_SUPPORTED_READ_ONLY] AppendData ...`, and the table still had one row afterwards. The token was revoked in the cleanup below.
 
 ## Test 10: edge cases from the documentation
 
@@ -95,6 +116,10 @@ List SQL warehouses HTTP 200. SELECT through the Statement Execution API HTTP 40
 - Scopes without a documented operation list (`bundle`, `bundle-deployments`, `billing`).
 - OAuth user-to-machine (U2M) token requests.
 
-## Cleanup
+## Cleanup (first run)
 
 `python tests/cleanup.py` revoked 19 test tokens, listed 0 test tokens afterwards, deleted the test service principal (which removes its secrets), dropped the test schema and removed the local token file. Four probe tokens had already expired and returned 404. Test 11 revoked its own token. See `cleanup_output.txt`.
+
+## Cleanup (UI screenshots and example rerun)
+
+`python tests/cleanup.py` revoked 2 more tokens (the token made in the UI and the token for the example rerun), listed 0 test tokens afterwards, deleted the second test service principal and dropped the test schema again. No OAuth secret was generated in the UI, and the secrets of the first service principal went with it. See `cleanup_output_2.txt`.
