@@ -1,0 +1,675 @@
+{
+  "scopes": [
+    {
+      "name": "access-management",
+      "display_name": "Access Management",
+      "description": "Perform operations related to users, service principals, groups and their permissions in Accounts and Workspaces.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "agent-kit",
+      "display_name": "AgentKit",
+      "description": "Manage durable memory and session state for AI agents.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "ai-functions",
+      "display_name": "AI Functions",
+      "description": "Perform operations related to Databricks AI Functions.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "ai-gateway",
+      "display_name": "Unity Gateway",
+      "description": "Unity Gateway inference requests",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "ai-search",
+      "display_name": "AI Search",
+      "description": "Perform operations related to AI Search indexes.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "alerts",
+      "display_name": "Alerts",
+      "description": "Perform operations related to Databricks SQL alerts and alert destinations.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "apps",
+      "display_name": "Apps",
+      "description": "Perform operations related to Apps on Databricks.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "authentication",
+      "display_name": "Authentication",
+      "description": "Perform operations related to authentication settings and configurations for Accounts and Workspaces.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "billing",
+      "display_name": "Billing",
+      "description": "Perform operations related to Databricks billing and usage.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "bundle",
+      "display_name": "Bundle",
+      "description": "[Deprecated] Perform operations related to Databricks Asset Bundle deployment metadata, including deployments, versions, and resources.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "bundle-deployments",
+      "display_name": "Bundle Deployments",
+      "description": "Perform operations related to Databricks Asset Bundle deployment metadata, including deployments, versions, and resources.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "cleanrooms",
+      "display_name": "Clean Rooms",
+      "description": "Perform operations related to clean rooms and their assets and task runs.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "clusters",
+      "display_name": "Clusters",
+      "description": "Perform operations related to cluster management for data processing and analytics.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "command-execution",
+      "display_name": "Command Execution",
+      "description": "Perform operations related to execution of commands and code on clusters and management of execution contexts.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "compute-migrations",
+      "display_name": "Compute Migrations",
+      "description": "Create and manage migrations from classic compute to serverless compute.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "custom-llms",
+      "display_name": "Custom LLMs",
+      "description": "Perform operations related to Custom LLMs (beta).",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "dashboards",
+      "display_name": "AI/BI",
+      "description": "Perform operations related to AI/BI Dashboards.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "databricks-connect",
+      "display_name": "Databricks Connect",
+      "description": "Perform operations related to Databricks Connect via the Spark Connect gRPC protocol.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "dataclassification",
+      "display_name": "Data Classification",
+      "description": "Perform operations related to data classification for Unity Catalog catalogs.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "dataquality",
+      "display_name": "Data Quality Monitoring",
+      "description": "Perform operations related to Data Quality Monitoring for Unity Catalog objects.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "disaster-recovery",
+      "display_name": "Disaster Recovery",
+      "description": "Manage disaster recovery configurations and execute failover operations.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "domains",
+      "display_name": "Domains",
+      "description": "Perform operations related to Domains for organizing and discovering data assets.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "environments",
+      "display_name": "Environments",
+      "description": "Perform operations related to workspace-level environments including base environments for serverless notebooks and jobs.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "files",
+      "display_name": "File Management",
+      "description": "Perform operations related to managing files on Databricks in a filesystem-like interface.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "forecasting",
+      "display_name": "Forecasting",
+      "description": "Perform operations related to forecasting models and time-series predictions.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "genie",
+      "display_name": "Genie",
+      "description": "Perform operations related to Genie conversational analytics spaces and queries.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "genie-agents",
+      "display_name": "Genie Agents",
+      "description": "Perform operations related to Genie Agents.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "genie-migrate",
+      "display_name": "Genie Migrate",
+      "description": "Perform operations related to Genie Migrate migration projects and their source files.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "global-init-scripts",
+      "display_name": "Global Init Scripts",
+      "description": "Perform operations related to global initialization scripts.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "identity",
+      "display_name": "Identity",
+      "description": "Perform operations related to identities in Accounts and Workspaces.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "instance-pools",
+      "display_name": "Instance Pools",
+      "description": "Perform operations related to management of instance pools to reduce cluster start and scale-up times.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "instance-profiles",
+      "display_name": "Instance Profiles",
+      "description": "Perform operations related to instance profiles.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "jobs",
+      "display_name": "Jobs and Workflows",
+      "description": "Perform operations related to automated jobs and workflows on Databricks Workspaces.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "knowledge",
+      "display_name": "Knowledge",
+      "description": "Perform operations related to knowledge pages and their asset links.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "knowledge-assistants",
+      "display_name": "Knowledge Assistants",
+      "description": "Perform operations related to Knowledge Assistants and related resources.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "lakewatch",
+      "display_name": "Lakewatch",
+      "description": "Perform operations related to Lakewatch data sources, detection rules, and per-catalog configuration.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "libraries",
+      "display_name": "Libraries",
+      "description": "Perform operations related to libraries on Databricks.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "marketplace",
+      "display_name": "Marketplace",
+      "description": "Perform operations related to AI and analytics assets such as ML models, notebooks, applications in an open marketplace.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "mlflow",
+      "display_name": "MLflow",
+      "description": "Perform operations related to MLflow experiments, runs, models, and model registry artifacts.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "model-serving",
+      "display_name": "Model Serving",
+      "description": "Perform operations related to model serving endpoints for real-time inference.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "model-serving-inference",
+      "display_name": "Model Serving Inference",
+      "description": "Query model serving endpoints for real-time inference.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "networking",
+      "display_name": "Networking",
+      "description": "Perform operations related to network connectivity configurations, private access, and network policies.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "notifications",
+      "display_name": "Notifications",
+      "description": "Perform operations related to notification destinations for alerts and system notifications.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "pipelines",
+      "display_name": "Pipelines",
+      "description": "Perform operations related to pipelines, runs, and other Delta Live Table resources.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "postgres",
+      "display_name": "Postgres Database",
+      "description": "Perform operations related to Postgres Database Instances and their configurations.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "provisioning",
+      "display_name": "Provisioning",
+      "description": "Perform operations related to Databricks Workspace deployment, cross-account IAM roles, storage, and encryption configurations.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "qualitymonitor",
+      "display_name": "Quality Monitor",
+      "description": "Perform operations related to quality monitors for Unity Catalog objects.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "query-history",
+      "display_name": "Query History",
+      "description": "Perform operations related to query history.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "sandbox",
+      "display_name": "Sandbox",
+      "description": "Perform operations related to management of sandboxes.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "scim",
+      "display_name": "SCIM",
+      "description": "Perform operations related to users, service principals, groups and their permissions in Accounts and Workspaces.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "search",
+      "display_name": "Vector Search",
+      "description": "[Deprecated] Perform operations related to Vector Search indexes.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "secrets",
+      "display_name": "Secrets Management",
+      "description": "Perform operations related to secrets for secure credential storage.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "settings",
+      "display_name": "Settings",
+      "description": "Perform operations related to security settings for Accounts and Workspaces.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "sharing",
+      "display_name": "Delta Sharing",
+      "description": "Perform operations related to data sharing with Unity Catalog for providers, recipients, and shares.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "sql",
+      "display_name": "Databricks SQL",
+      "description": "Perform operations related to Databricks SQL assets, including warehouses, dashboards, queries and query history, and alerts.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "supervisor-agents",
+      "display_name": "Supervisor Agents",
+      "description": "Manage Supervisor Agents and related resources.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "tags",
+      "display_name": "Tags",
+      "description": "Perform operations related to tag policies and tag assignments on workspace objects.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "unity-catalog",
+      "display_name": "Unity Catalog",
+      "description": "Perform operations related to data governance with Unity Catalog for metastores, catalogs, schemas, tables, external locations, and storage credentials.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "vector-search",
+      "display_name": "Vector Search",
+      "description": "Perform operations related to Vector Search indexes.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "workspace",
+      "display_name": "Databricks Workspace",
+      "description": "Perform operations related to workspace-level entities that include notebooks, Git checkouts, and secrets.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    },
+    {
+      "name": "zerobus",
+      "display_name": "Zerobus Ingest",
+      "description": "Ingest data into Unity Catalog tables with Zerobus.",
+      "allowed_modifiers": [
+        {
+          "name": "read",
+          "description": "Operations are restricted to read only."
+        }
+      ]
+    }
+  ]
+}

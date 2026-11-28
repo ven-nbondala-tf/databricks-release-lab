@@ -1,0 +1,9 @@
+could not revoke one token (usually already expired): 404
+could not revoke one token (usually already expired): 404
+could not revoke one token (usually already expired): 404
+could not revoke one token (usually already expired): 404
+revoked 19 test tokens, 4 failed
+test tokens still listed: 0
+delete test service principal (its secrets go with it): HTTP 204
+dropped the test schema
+removed the local token file

@@ -1,0 +1,5 @@
+created t11 scopes sql:read: HTTP 200
+list SQL warehouses: HTTP 200
+SELECT 1 through the Statement Execution API: HTTP 403 Provided access token has scope(s) [sql:read] that cannot send a POST request to this endpoint [ReqId: <id>]
+GET query history: HTTP 403 Provided access token does not have required scopes: query-history [ReqId: <id>]
+revoke t11: HTTP 200

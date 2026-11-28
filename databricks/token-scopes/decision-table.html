@@ -1,0 +1,44 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{width:1700px;font-family:'Inter',Helvetica,Arial,sans-serif;color:#1E2329;background-color:#F7F5F0;
+    background-image:linear-gradient(#ECE9E2 1px,transparent 1px),linear-gradient(90deg,#ECE9E2 1px,transparent 1px);background-size:40px 40px;padding:56px 60px 44px}
+  h1{font-size:44px;font-weight:700;letter-spacing:-1px}
+  .sub{margin-top:8px;font-size:22px;color:#626872}
+  table{margin-top:28px;width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:3px solid #5B4BC4;border-radius:18px;overflow:hidden}
+  th{background:#5B4BC4;color:#fff;text-align:left;font-size:21px;font-weight:600;padding:16px 22px}
+  td{vertical-align:top;font-size:21px;line-height:1.35;padding:16px 22px;border-top:2px solid #E1DDEC}
+  td.use{font-weight:700;width:330px}
+  td.use span{display:block;font-weight:500;font-size:18px;color:#626872;margin-top:4px}
+  code{font-family:'SF Mono',Menlo,Consolas,monospace;font-size:19px;background:#F1EFFA;border-radius:6px;padding:2px 7px;color:#3E31A0;white-space:nowrap}
+  td.no{color:#8A3A1A}
+  .foot{margin-top:22px;display:flex;justify-content:space-between;font-size:20px}
+  .foot .l{color:#626872}.foot .r{color:#E0663A;font-weight:700}
+</style></head><body>
+<h1>I need a token for... select this</h1>
+<p class="sub">Start with the narrowest scope that does the job, then add scopes when a call returns a missing-scope error.</p>
+<table>
+<tr><th>I need a token for</th><th>Select</th><th>What it can do</th><th>What it cannot do</th></tr>
+<tr><td class="use">BI tools and dashboards<span>Tableau, Power BI, SQL clients</span></td>
+ <td><code>sql:restricted-query</code><br>or <code>sql:read:restricted-query</code> if the tool lists warehouses</td>
+ <td>SELECT and DESCRIBE</td><td class="no">INSERT, CREATE, DROP, other SQL API calls</td></tr>
+<tr><td class="use">AI agents and MCP clients<span>read data, ask questions</span></td>
+ <td><code>sql:restricted-query</code> <code>unity-catalog:read</code><br>add <code>genie</code> or <code>model-serving-inference</code> only if needed</td>
+ <td>Query data, read catalog metadata, call the added service</td><td class="no">Change data or catalog objects</td></tr>
+<tr><td class="use">Monitoring and alerting<span>health checks, dashboards of status</span></td>
+ <td><code>jobs:read</code> <code>pipelines:read</code> <code>clusters:read</code> <code>query-history:read</code></td>
+ <td>GET and HEAD calls</td><td class="no">Create, run, edit or delete anything</td></tr>
+<tr><td class="use">CI/CD deployment<span>bundles, jobs, notebooks</span></td>
+ <td><code>jobs</code> <code>pipelines</code> <code>workspace</code> <code>files</code>, on a scoped OAuth secret</td>
+ <td>Create and update jobs, pipelines and files</td><td class="no">Manage users, groups or tokens</td></tr>
+<tr><td class="use">Data pipelines and scripts<span>load, transform, export</span></td>
+ <td><code>sql</code> <code>files</code> <code>unity-catalog:read</code></td>
+ <td>Run any SQL, upload and download files</td><td class="no">Jobs, compute, identity, tokens</td></tr>
+<tr><td class="use">Admin automation<span>users, permissions, settings</span></td>
+ <td><code>identity</code> <code>access-management</code> <code>settings</code>, only those you need</td>
+ <td>Manage identities and permissions</td><td class="no">Never give <code>authentication</code> to a tool: it can create a full-access token</td></tr>
+</table>
+<div class="foot"><span class="l">BI tools, MCP clients and CI/CD sets come from the API scopes reference and were not tested with a real tool</span><span class="r">Databricks Release Lab</span></div>
+</body></html>
