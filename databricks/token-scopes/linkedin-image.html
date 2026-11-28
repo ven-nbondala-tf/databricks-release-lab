@@ -1,0 +1,30 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1200px;height:1200px}
+  body{font-family:'Inter',Helvetica,Arial,sans-serif;color:#1E2329;background-color:#F7F5F0;
+    background-image:linear-gradient(#ECE9E2 1px,transparent 1px),linear-gradient(90deg,#ECE9E2 1px,transparent 1px);
+    background-size:40px 40px;position:relative;overflow:hidden}
+  .wrap{position:absolute;left:80px;right:80px;top:80px;bottom:70px}
+  .pill{display:inline-flex;align-items:center;background:#5B4BC4;color:#fff;border-radius:40px;padding:12px 28px;font-size:26px;font-weight:600}
+  h1{margin-top:36px;font-variation-settings:'opsz' 32;font-weight:700;font-size:84px;line-height:1.06;letter-spacing:-2.2px}
+  .lede{margin-top:26px;font-size:33px;line-height:1.38;color:#626872;max-width:960px}
+  .card{position:absolute;left:0;top:520px;width:1040px;height:430px;background:#fff;border:4px solid #5B4BC4;border-radius:22px}
+  .row{position:absolute;left:40px;width:960px;height:96px;background:#F7F5F0;border:3px solid #E1DDEC;border-radius:14px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;font-size:30px;font-weight:600}
+  .row code{font-family:'SF Mono',Menlo,Consolas,monospace;font-size:29px;color:#3E31A0;background:#F1EFFA;border-radius:8px;padding:4px 12px}
+  .row span{color:#626872;font-weight:500;font-size:28px}
+  .row.no span{color:#E0663A;font-weight:700}
+  .foot{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:baseline;font-size:26px}
+  .foot .l{color:#626872} .foot .r{color:#E0663A;font-weight:700}
+</style></head><body><div class="wrap">
+  <div class="pill">Generally available, November 4, 2026</div>
+  <h1>Give every token<br>only what it needs</h1>
+  <p class="lede">Scopes and modifiers limit what a Databricks token can call.</p>
+  <div class="card">
+    <div class="row" style="top:30px"><code>sql:restricted-query</code><span>SELECT and DESCRIBE</span></div>
+    <div class="row" style="top:146px"><code>jobs:read</code><span>List and get jobs</span></div>
+    <div class="row no" style="top:262px"><code>unity-catalog:read</code><span>Creating a schema is refused</span></div>
+  </div>
+  <div class="foot"><span class="l">From the Azure Databricks documentation</span><span class="r">Databricks Release Lab</span></div></div></body></html>

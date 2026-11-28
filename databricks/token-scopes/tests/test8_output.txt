@@ -1,0 +1,6 @@
+create secret with scopes ['sql:restricted-query'] -> HTTP 200 {'create_time': '2026-11-28T08:30:35.000Z', 'update_time': '2026-11-28T08:30:35.000Z', 'status': 'ACTIVE', 'expire_time': '2026-11-28T09:30:35Z', 'scopes': ['sql:restricted-query']}
+token request scope='sql:restricted-query': HTTP 200 {'scope': 'sql:restricted-query', 'token_type': 'Bearer', 'expires_in': 3600}
+   token granted scope: 'sql:restricted-query'; list warehouses HTTP 403; list jobs HTTP 403; SELECT SUCCEEDED
+token request scope='sql': HTTP 403 {'error': 'access_denied', 'request_id': '<id>', 'error_description': "Scopes 'sql' are not assigned to the client <id>; the client has scope(s) [sql:restricted-query] that cannot send this request"}
+token request scope='all-apis': HTTP 403 {'error': 'access_denied', 'request_id': '<id>', 'error_description': "Scopes 'all-apis' are not assigned to the client <id>"}
+token request scope='sql:restricted-query jobs:read': HTTP 403 {'error': 'access_denied', 'request_id': '<id>', 'error_description': "Scopes 'jobs:read' are not assigned to the client <id>"}

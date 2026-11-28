@@ -1,0 +1,12 @@
+---
+config:
+  look: handDrawn
+  theme: neutral
+---
+flowchart LR
+    T["Token<br/>PAT or OAuth secret"] --> S["Scope<br/>sql, jobs, clusters, unity-catalog"]
+    E["Empty scopes array<br/>full access, PATs only"] -.-> T
+    S --> N["No modifier<br/>every operation in the scope"]
+    S --> R[":read<br/>GET and HEAD requests only"]
+    S --> Q[":restricted-query<br/>sql only: SELECT and DESCRIBE,<br/>no other SQL API calls"]
+    S --> RQ[":read:restricted-query<br/>sql only: read operations<br/>plus read-only queries"]

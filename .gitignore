@@ -9,3 +9,7 @@ __pycache__/
 .venv/
 notes/
 .vscode/
+
+# local test tokens, never commit
+databricks/token-scopes/tests/.tokens.json
+databricks/token-scopes/tests/.sp.json

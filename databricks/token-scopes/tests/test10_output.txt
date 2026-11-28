@@ -1,0 +1,8 @@
+create PAT scopes=['all-apis:read']: HTTP 400 Invalid scopes: all-apis:read
+create PAT scopes=[]: HTTP 200 returned scopes=None autoscope=None
+create PAT scopes=['authentication']: HTTP 200 returned scopes=['authentication'] autoscope=AUTOSCOPE_STATE_USER_SELECTED
+create PAT scopes=['not-a-scope']: HTTP 400 Invalid scopes: not-a-scope
+token with empty scopes: GET jobs/list HTTP 200
+token with only authentication: GET jobs/list HTTP 403 Provided access token does not have required scopes: jobs [ReqId: <id>]
+token with only authentication creates a token with empty scopes (full access): HTTP 200
+   the new token: GET jobs/list HTTP 200

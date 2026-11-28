@@ -1,0 +1,6 @@
+created t7 scopes sql:read: 200
+before: jobs/list 403  sql/warehouses 200
+PATCH to jobs:read: HTTP 200 scopes now: None
+  sql/warehouses refused after 305 s
+  jobs/list works after 311 s
+jobs allowed after (s): 311  warehouses refused after (s): 305
