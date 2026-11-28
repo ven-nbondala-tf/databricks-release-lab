@@ -44,7 +44,7 @@ The scope list tells you which names you can use. Call the token scopes endpoint
 curl -s -H "Authorization: Bearer <token>" "<workspace-url>/api/2.0/token-scopes"
 ```
 
-The response has a `scopes` array. Each entry has `name`, `display_name`, `description` and `allowed_modifiers`. The list can include scopes that the API scopes reference does not show yet, such as `bundle`. The `allowed_modifiers` field shows only `read`, but the Token API also accepts `sql:restricted-query` and `sql:read:restricted-query`.
+The response has a `scopes` array. Each entry has `name`, `display_name`, `description` and `allowed_modifiers`. The list can include scopes that the API scopes reference does not show. A later section lists the ones found on one workspace. The `allowed_modifiers` field shows only `read`, but the Token API also accepts `sql:restricted-query` and `sql:read:restricted-query`.
 
 ### Step 2: Create a scoped token
 
@@ -87,7 +87,7 @@ curl -s -X PATCH "<workspace-url>/api/2.0/token/<token-id>" \
   -d '{"token": {"scopes": ["jobs:read"]}, "update_mask": "scopes"}'
 ```
 
-Scope changes can take up to ten minutes to propagate, so wait before you test the new scopes.
+The change took about five minutes in our test, and the documentation says it can take up to ten minutes, so wait before you test the new scopes.
 
 ### Step 5: Scope an OAuth secret for a service principal
 
@@ -105,7 +105,35 @@ The access token lasts one hour and carries the scopes you asked for. A token ca
 
 ## Choose Databricks token scopes for each use
 
-Choose scopes by what the token is for. Start with the narrowest option, and if a call fails with a missing-scope error, add the scope that the error names.
+Choose scopes by what the token is for. Start with the narrowest option, and if a call fails with a missing-scope error, add the scope that the error names. The sets for BI tools, MCP clients and bundle deployments come from the API scopes reference, not from a run with the real tool, so check them with one allowed call and one refused call before you rely on them.
+
+### Start with the :read trap
+
+The `:read` modifier means GET and HEAD requests only. Running a SQL statement through the Statement Execution API is a POST request, so a token with `sql:read` can list SQL warehouses but cannot run a `SELECT`. The call returns HTTP 403: `Provided access token has scope(s) [sql:read] that cannot send a POST request to this endpoint`.
+
+For read-only data access, use `sql:restricted-query`. If the tool also lists SQL warehouses before it connects, use `sql:read:restricted-query`. The same rule applies to other scopes: anything that starts a run, sends a query or creates a conversation is a POST and needs the scope without `:read`.
+
+### Treat the authentication scope as an admin credential
+
+A token with the `authentication` scope can create new tokens with any scope. That makes it an admin credential. Never give it to a tool, an agent or a pipeline.
+
+The scope does not look dangerous by itself. A token with only `authentication` is refused on the Jobs API:
+
+```bash
+curl -s -H "Authorization: Bearer <authentication-only-token>" "<workspace-url>/api/2.1/jobs/list?limit=1"
+# HTTP 403: Provided access token does not have required scopes: jobs
+```
+
+The same token can create a new token with an empty scopes array, which means full access, and the new token is not refused:
+
+```bash
+curl -s -X POST "<workspace-url>/api/2.0/token/create" \
+  -H "Authorization: Bearer <authentication-only-token>" -H "Content-Type: application/json" \
+  -d '{"lifetime_seconds": 600, "comment": "created by the authentication-only token", "scopes": []}'
+# HTTP 200, and the new token can call the Jobs API
+```
+
+Give `authentication` only to a token whose job is to manage other tokens, and guard it like a password.
 
 [image: decision-table.png | Caption: Scopes to select for six common uses of a token. | Alt: A table with six rows: BI tools and dashboards, AI agents and MCP clients, monitoring and alerting, CI/CD deployment, data pipelines and scripts, and admin automation. Each row lists the scopes to select, what the token can do and what it cannot do.]
 
@@ -114,24 +142,27 @@ Choose scopes by what the token is for. Start with the narrowest option, and if 
 - Scopes: `sql:restricted-query`. Use `sql:read:restricted-query` if the tool lists SQL warehouses before it connects.
 - It can run `SELECT` and `DESCRIBE`. It cannot run `INSERT`, `CREATE TABLE` or `DROP TABLE`, and it cannot call other SQL APIs.
 - Do not use this token for a tool that writes results back to a table.
+- This set comes from the API scopes reference and the SQL test above, not from a run with Tableau or Power BI.
 
 ### AI agents and MCP clients
 
 - Scopes: `sql:restricted-query` and `unity-catalog:read` for data access. Add `genie` for Genie conversations or `model-serving-inference` for model queries, only when the agent needs them.
 - It can query data and read catalog metadata. A token with `unity-catalog:read` lists catalogs but cannot create a schema.
 - Do not add `genie` casually: the scope also covers creating Genie spaces. The `:read` modifier is not enough for starting a conversation or querying an index, because those calls are not GET or HEAD requests.
+- The scopes for MCP clients come from the API scopes reference and were not tested with a real client.
 
 ### Monitoring and alerting
 
 - Scopes: `jobs:read`, `pipelines:read`, `clusters:read` and `query-history:read`, as needed.
 - It can list and get jobs, pipelines, clusters and query history. A token with `jobs:read` can list jobs but cannot create or delete one.
+- Query history is its own scope. `sql` does not cover it: a token without `query-history` gets `Provided access token does not have required scopes: query-history`.
 - Do not use it to trigger a run or a restart. Those calls are POST requests and need the full scope.
 
 ### CI/CD deployment
 
 - Scopes: start with `jobs`, `pipelines`, `workspace` and `files` on a scoped OAuth secret for a service principal, and add scopes as the deployment reports missing ones.
 - It can create and update jobs and pipelines and import files. It cannot manage users, groups or tokens.
-- Do not use a personal access token of a person for a pipeline. The documentation does not list which scopes a bundle deployment needs, so read the missing-scope errors and add only those.
+- Do not use a personal access token of a person for a pipeline. The documentation does not list which scopes a bundle deployment needs. This set comes from the API scopes reference and was not tested with a bundle deployment, so read the missing-scope errors and add only the scopes they name.
 
 ### Data pipelines and scripts
 
@@ -143,7 +174,7 @@ Choose scopes by what the token is for. Start with the narrowest option, and if 
 
 - Scopes: `identity`, `access-management` or `settings`, only the ones the script needs.
 - It can manage the identities, permissions or settings that its scope covers.
-- Do not add `authentication` unless the token manages other tokens. A token with only that scope can create a token with full access.
+- Do not add `authentication` unless the token manages other tokens, and see the warning above: it is an admin credential.
 
 ## SQL access levels, from narrowest to widest
 
@@ -153,7 +184,29 @@ SQL is where most people start, so the levels are worth knowing in order.
 - `sql:read:restricted-query`: the same queries, plus the read operations of the `sql` scope, such as listing SQL warehouses.
 - `sql`: everything in the scope, including `INSERT`, `CREATE TABLE`, `DROP TABLE` and warehouse changes. In the UI this is Read + Restricted query + Write.
 
-`sql:read` alone sits beside this list, not in it. It can list warehouses, but it cannot run a query, because running a statement is a POST request: `Provided access token has scope(s) [sql:read] that cannot send a POST request to this endpoint`. That is why the `restricted-query` modifier exists.
+`sql:read` alone sits beside this list, not in it. It lists warehouses but cannot run a query, which is the `:read` trap described above. That is why the `restricted-query` modifier exists.
+
+## Scopes in the API but not in the reference
+
+Check the scope list on your own workspace, because it can differ from the documentation. On November 28, 2026, `GET /api/2.0/token-scopes` on the workspace used for this guide returned 61 scopes, and 15 of them do not appear in the API scopes reference, which lists 46:
+
+- `ai-gateway`
+- `billing`
+- `bundle`
+- `bundle-deployments`
+- `compute-migrations`
+- `custom-llms`
+- `databricks-connect`
+- `disaster-recovery`
+- `forecasting`
+- `genie-agents`
+- `genie-migrate`
+- `provisioning`
+- `qualitymonitor`
+- `search`
+- `zerobus`
+
+The documentation does not say what these cover, so this guide does not recommend any of them. Every scope in the reference was also in the live list. Run `GET /api/2.0/token-scopes` on your workspace and compare it with the reference before you rely on a scope. The response also lists only the `read` modifier for each scope, although the Token API accepts `sql:restricted-query` and `sql:read:restricted-query`.
 
 ## Personal access tokens or OAuth secrets
 
@@ -188,13 +241,30 @@ curl -s -X POST "<workspace-url>/api/2.0/sql/statements" -H "Authorization: Bear
 
 The `SELECT` returns the rows with the state `SUCCEEDED`. The `INSERT` returns the state `FAILED` with `[OP_NOT_SUPPORTED_READ_ONLY]`, and the table keeps its original rows. The full example, including setup, every test call and cleanup, is in the [token-scopes](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/token-scopes) folder of the repository.
 
+## The errors you will see
+
+These are the responses from a workspace on November 28, 2026. The ID and workspace values are masked.
+
+Three forms tell you a scope is missing:
+
+- The token has no scope for the API area: HTTP 403 `Provided access token does not have required scopes: jobs`.
+- The token has the scope but not for this kind of request: HTTP 403 `Provided access token has scope(s) [jobs:read] that cannot send a POST request to this endpoint`. The same form appears with `GET` for `[sql:restricted-query]` on the warehouse list.
+- An OAuth token request asks for a scope that the secret does not have: HTTP 403 `access_denied` with `Scopes 'sql' are not assigned to the client <client-id>; the client has scope(s) [sql:restricted-query] that cannot send this request`.
+
+Two more cover writing the scopes and writing data:
+
+- A scope name the API does not accept returns HTTP 400 `Invalid scopes: all-apis`. The same message appears for `all-apis:read` and for names that do not exist.
+- An `INSERT`, `CREATE TABLE` or `DROP TABLE` under `sql:restricted-query` returns HTTP 200 with the statement state `FAILED` and `[OP_NOT_SUPPORTED_READ_ONLY] ... is not supported in read-only session mode. SQLSTATE: 42KD1`. The documentation shows `[INSUFFICIENT_PERMISSIONS]` for data changes, but the Statement Execution API returned `OP_NOT_SUPPORTED_READ_ONLY` for `INSERT` as well as for DDL.
+
+An OAuth token request that asks for more than its secret allows is refused with the 403 `access_denied` above. It is not narrowed to the secret's scopes.
+
 ## Things to know
 
-- Use the missing-scope error to find the scope. A call to the Jobs API with a `sql` token returns HTTP 403 with `Provided access token does not have required scopes: jobs`. A call with the right scope but the wrong method returns `Provided access token has scope(s) [jobs:read] that cannot send a POST request to this endpoint`.
-- Write the scopes exactly. An unknown name returns HTTP 400 with `Invalid scopes: <name>`. The literal `all-apis` and `all-apis:read` are not accepted for personal access tokens. For full access, send an empty `scopes` array.
-- The `authentication` scope removes the limit. A token with only `authentication` is refused on the Jobs API, but it can create a new token with an empty scopes array that is not refused. Give the scope only to tokens that manage tokens.
-- Wait after you change scopes. A PATCH on a personal access token can take up to ten minutes to apply, so test after the wait, not right after the call. To change the scopes of an OAuth secret, generate a new secret.
-- Check the scope for the data you need. Query history needs the `query-history` scope, not `sql`, and a few scopes in the live list, such as `bundle`, have no entry in the API scopes reference. When the documentation does not say what a scope covers, create a test token and read the error.
+- Treat `authentication` as an admin credential. A token with that scope can mint a full-access token, as shown above.
+- A scope change takes time. A PATCH on a personal access token took about five minutes in our test, and the documentation says up to ten, so test after the wait. To change the scopes of an OAuth secret, generate a new secret.
+- Send an empty `scopes` array for full access. The literal `all-apis` is not accepted for personal access tokens, and neither is `all-apis:read`.
+- Query history needs the `query-history` scope, not `sql`.
+- When the documentation does not say what a scope covers, create a short-lived test token and read the error. Do this for any scope that is in your workspace list but not in the reference.
 
 ## Best practices
 

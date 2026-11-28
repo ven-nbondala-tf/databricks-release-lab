@@ -38,7 +38,7 @@
  <td>Run any SQL, upload and download files</td><td class="no">Jobs, compute, identity, tokens</td></tr>
 <tr><td class="use">Admin automation<span>users, permissions, settings</span></td>
  <td><code>identity</code> <code>access-management</code> <code>settings</code>, only those you need</td>
- <td>Manage identities and permissions</td><td class="no">Avoid <code>authentication</code>: it can create tokens with any scope</td></tr>
+ <td>Manage identities and permissions</td><td class="no">Never give <code>authentication</code> to a tool: it can create a full-access token</td></tr>
 </table>
-<div class="foot"><span class="l">From the Azure Databricks documentation</span><span class="r">Databricks Release Lab</span></div>
+<div class="foot"><span class="l">BI tools, MCP clients and CI/CD sets come from the API scopes reference and were not tested with a real tool</span><span class="r">Databricks Release Lab</span></div>
 </body></html>
