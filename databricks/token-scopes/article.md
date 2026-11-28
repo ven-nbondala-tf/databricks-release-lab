@@ -4,7 +4,7 @@ Subtitle: Choose Databricks token scopes and access levels for BI tools, AI agen
 
 Databricks token scopes limit which APIs a token can call, and without them a personal access token can call every API you can, so a token pasted into a BI tool or an agent hands that tool your full access. Scope modifiers, generally available since November 4, 2026, narrow a scope further to read operations or to read-only SQL queries. This guide shows how to list the scopes, create and test scoped tokens, change them later, and pick the right scopes for six common uses. The complete code for this guide is on GitHub: [databricks/token-scopes](https://github.com/ven-nbondala-tf/databricks-release-lab/tree/main/databricks/token-scopes).
 
-[VIDEO: add the YouTube link here]
+[VIDEO: https://youtu.be/ohhDVVHqtdQ]
 Caption: Databricks token scopes in a short video.
 
 ## What are Databricks token scopes
